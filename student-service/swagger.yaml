@@ -24,6 +24,23 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Student'
+    post:
+      summary: Menambahkan siswa baru
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '201':
+          description: Siswa berhasil ditambahkan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Data tidak lengkap
   /users/{id}:
     get:
       summary: Mendapatkan siswa berdasarkan ID
@@ -42,6 +59,44 @@ paths:
                 $ref: '#/components/schemas/Student'
         '404':
           description: Siswa tidak ditemukan
+    put:
+      summary: Memperbarui data siswa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentInput'
+      responses:
+        '200':
+          description: Data siswa berhasil diperbarui
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        '400':
+          description: Data tidak lengkap
+        '404':
+          description: Siswa tidak ditemukan
+    delete:
+      summary: Menghapus siswa
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Siswa berhasil dihapus
+        '404':
+          description: Siswa tidak ditemukan
 
 components:
   schemas:
@@ -57,3 +112,13 @@ components:
         email:
           type: string
           description: Alamat email siswa
+    StudentInput:
+      type: object
+      required:
+        - name
+        - email
+      properties:
+        name:
+          type: string
+        email:
+          type: string

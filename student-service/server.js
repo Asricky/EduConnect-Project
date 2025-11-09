@@ -28,9 +28,7 @@ const pool = mysql.createPool(dbConfig);
 // Endpoint GET /users (Contoh: Menampilkan semua siswa)
 app.get('/users', async (req, res) => {
     try {
-        // Query sederhana ke DB (Asumsi tabel 'students' sudah ada)
         const [rows] = await pool.query('SELECT student_id AS id, name, email FROM students');
-        // Format data: JSON [cite: 14]
         res.status(200).json(rows); 
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -53,12 +51,67 @@ app.get('/users/:id', async (req, res) => {
     }
 });
 
-// Endpoint POST, PUT, DELETE juga perlu ditambahkan [cite: 16]
+// Endpoint POST /users (Membuat siswa baru)
+app.post('/users', async (req, res) => {
+    const { name, email } = req.body;
+    if (!name || !email) {
+        return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    try {
+        const [result] = await pool.query(
+            'INSERT INTO students (name, email) VALUES (?, ?)',
+            [name, email]
+        );
+        res.status(201).json({ id: result.insertId, name, email });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint PUT /users/:id (Memperbarui data siswa)
+app.put('/users/:id', async (req, res) => {
+    const studentId = req.params.id;
+    const { name, email } = req.body;
+    if (!name || !email) {
+        return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    try {
+        const [result] = await pool.query(
+            'UPDATE students SET name = ?, email = ? WHERE student_id = ?',
+            [name, email, studentId]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ id: Number(studentId), name, email });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint DELETE /users/:id (Menghapus siswa)
+app.delete('/users/:id', async (req, res) => {
+    const studentId = req.params.id;
+    try {
+        const [result] = await pool.query('DELETE FROM students WHERE student_id = ?', [studentId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(204).send();
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 // --- Dokumentasi Swagger (OpenAPI) ---
 // Muat file YAML (akan dibuat di langkah berikutnya)
 const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
-//BENERIN INI app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); [cite: 39]
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // --- Mulai Server ---
 app.listen(PORT, () => {

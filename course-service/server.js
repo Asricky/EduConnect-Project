@@ -49,6 +49,65 @@ app.get('/courses/:id', async (req, res) => {
     }
 });
 
+// Endpoint POST /courses (Membuat kursus baru)
+app.post('/courses', async (req, res) => {
+    const { title, credits, lecturer } = req.body;
+    const numericCredits = Number(credits);
+    if (!title || !lecturer || Number.isNaN(numericCredits)) {
+        return res.status(400).json({ message: 'Title, credits, and lecturer are required' });
+    }
+
+    try {
+        const [result] = await pool.query(
+            'INSERT INTO courses (title, credits, lecturer) VALUES (?, ?, ?)',
+            [title, numericCredits, lecturer]
+        );
+        res.status(201).json({ id: result.insertId, title, credits: numericCredits, lecturer });
+    } catch (error) {
+        console.error('Error creating course:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint PUT /courses/:id (Memperbarui kursus)
+app.put('/courses/:id', async (req, res) => {
+    const courseId = req.params.id;
+    const { title, credits, lecturer } = req.body;
+    const numericCredits = Number(credits);
+    if (!title || !lecturer || Number.isNaN(numericCredits)) {
+        return res.status(400).json({ message: 'Title, credits, and lecturer are required' });
+    }
+
+    try {
+        const [result] = await pool.query(
+            'UPDATE courses SET title = ?, credits = ?, lecturer = ? WHERE course_id = ?',
+            [title, numericCredits, lecturer, courseId]
+        );
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        res.status(200).json({ id: Number(courseId), title, credits: numericCredits, lecturer });
+    } catch (error) {
+        console.error('Error updating course:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
+// Endpoint DELETE /courses/:id (Menghapus kursus)
+app.delete('/courses/:id', async (req, res) => {
+    const courseId = req.params.id;
+    try {
+        const [result] = await pool.query('DELETE FROM courses WHERE course_id = ?', [courseId]);
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Course not found' });
+        }
+        res.status(204).send();
+    } catch (error) {
+        console.error('Error deleting course:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
+
 // Endpoint Integrasi: Mendapatkan Kursus yang Diambil oleh Siswa (Dipanggil oleh API Gateway)
 app.get('/courses/by-user/:userId', async (req, res) => {
     const userId = req.params.userId;
