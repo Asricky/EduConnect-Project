@@ -1,0 +1,4 @@
+/node_modules
+/student-service/node_modules
+/api-gateway/node_modules
+/course-service/node_modules
