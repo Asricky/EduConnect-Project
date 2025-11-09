@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Dashboard UTS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>EduConnect Dashboard</h1>
+        <p>Menampilkan data dari dua layanan (Student Service & Course Service) via API Gateway.</p>
+    </header>
+
+    <main>
+        <section class="data-section">
+            <h2>🧑‍🎓 Daftar Siswa (Student Service)</h2>
+            <button onclick="fetchStudents()">Muat Data Siswa</button>
+            <div id="student-data" class="data-container">
+                <p>Data siswa akan muncul di sini...</p>
+            </div>
+        </section>
+
+        <section class="data-section">
+            <h2>📚 Daftar Kursus (Course Service)</h2>
+            <button onclick="fetchCourses()">Muat Data Kursus</button>
+            <div id="course-data" class="data-container">
+                <p>Data kursus akan muncul di sini...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; UTS EAI/WSD Project | Menggunakan API Gateway (Port 4000)</p>
+    </footer>
+
+    <script>
+        // --- Konfigurasi ---
+        const API_GATEWAY_URL = 'http://localhost:4000'; // Sesuai dengan API Gateway Anda (Port 4000)
+
+        // --- Fungsi untuk Mengambil Data Siswa ---
+        async function fetchStudents() {
+            const container = document.getElementById('student-data');
+            container.innerHTML = 'Memuat data...';
+
+            try {
+                // Memanggil API Gateway, yang kemudian memanggil Student Service
+                const response = await fetch(`${API_GATEWAY_URL}/gateway/users`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    container.innerHTML = buildTable(data, ['ID', 'Nama', 'Email']);
+                } else {
+                    container.innerHTML = `<p class="error-msg">Gagal: ${data.message || response.statusText}</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching students:', error);
+                container.innerHTML = '<p class="error-msg">Terjadi kesalahan koneksi. Pastikan semua service (3001, 3002, 4000) berjalan.</p>';
+            }
+        }
+
+        // --- Fungsi untuk Mengambil Data Kursus ---
+        async function fetchCourses() {
+            const container = document.getElementById('course-data');
+            container.innerHTML = 'Memuat data...';
+
+            try {
+                // Memanggil API Gateway, yang kemudian memanggil Course Service
+                const response = await fetch(`${API_GATEWAY_URL}/gateway/courses`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    container.innerHTML = buildTable(data, ['ID', 'Judul Kursus', 'Kredit']);
+                } else {
+                    container.innerHTML = `<p class="error-msg">Gagal: ${data.message || response.statusText}</p>`;
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                container.innerHTML = '<p class="error-msg">Terjadi kesalahan koneksi. Pastikan semua service (3001, 3002, 4000) berjalan.</p>';
+            }
+        }
+
+        // --- Fungsi Pembantu untuk Membuat Tabel dari Data JSON ---
+        function buildTable(data, headers) {
+            if (!Array.isArray(data) || data.length === 0) {
+                return '<p>Tidak ada data ditemukan.</p>';
+            }
+
+            // Ambil kunci pertama dari objek pertama sebagai referensi kolom
+            const keys = Object.keys(data[0]);
+            
+            let tableHTML = '<table>';
+            
+            // Header
+            tableHTML += '<thead><tr>';
+            headers.forEach(header => {
+                tableHTML += `<th>${header}</th>`;
+            });
+            tableHTML += '</tr></thead>';
+
+            // Body
+            tableHTML += '<tbody>';
+            data.forEach(item => {
+                tableHTML += '<tr>';
+                keys.forEach(key => {
+                    tableHTML += `<td>${item[key]}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+            
+            return tableHTML;
+        }
+
+    </script>
+</body>
+</html>
