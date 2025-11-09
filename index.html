@@ -15,100 +15,28 @@
 
     <main>
         <section class="data-section">
-            <h2>🧑‍🎓 Daftar Siswa (Student Service)</h2>
-            <button onclick="fetchStudents()">Muat Data Siswa</button>
+            <div class="section-header">
+                <div>
+                    <h2>🧑‍🎓 Daftar Siswa (Student Service)</h2>
+                    <p class="section-subtitle">Menampilkan data siswa yang sudah tersimpan di database kampus.</p>
+                </div>
+                <button onclick="fetchStudents()">Muat Ulang</button>
+            </div>
             <div id="student-data" class="data-container">
                 <p>Data siswa akan muncul di sini...</p>
-            </div>
-
-            <div class="form-grid">
-                <form id="create-student-form">
-                    <h3>Tambah Siswa</h3>
-                    <label>Nama Lengkap
-                        <input type="text" name="name" placeholder="Nama" required />
-                    </label>
-                    <label>Email
-                        <input type="email" name="email" placeholder="email@campus.ac.id" required />
-                    </label>
-                    <button type="submit">Simpan Siswa</button>
-                    <p class="status" id="create-student-status"></p>
-                </form>
-
-                <form id="update-student-form">
-                    <h3>Perbarui Siswa</h3>
-                    <label>ID Siswa
-                        <input type="number" name="id" placeholder="1" min="1" required />
-                    </label>
-                    <label>Nama Lengkap
-                        <input type="text" name="name" placeholder="Nama baru" required />
-                    </label>
-                    <label>Email
-                        <input type="email" name="email" placeholder="email@campus.ac.id" required />
-                    </label>
-                    <button type="submit">Perbarui</button>
-                    <p class="status" id="update-student-status"></p>
-                </form>
-
-                <form id="delete-student-form">
-                    <h3>Hapus Siswa</h3>
-                    <label>ID Siswa
-                        <input type="number" name="id" placeholder="1" min="1" required />
-                    </label>
-                    <button type="submit" class="danger">Hapus</button>
-                    <p class="status" id="delete-student-status"></p>
-                </form>
             </div>
         </section>
 
         <section class="data-section">
-            <h2>📚 Daftar Kursus (Course Service)</h2>
-            <button onclick="fetchCourses()">Muat Data Kursus</button>
+            <div class="section-header">
+                <div>
+                    <h2>📚 Daftar Kursus (Course Service)</h2>
+                    <p class="section-subtitle">Daftar mata kuliah aktif yang dikirim oleh Course Service.</p>
+                </div>
+                <button onclick="fetchCourses()">Muat Ulang</button>
+            </div>
             <div id="course-data" class="data-container">
                 <p>Data kursus akan muncul di sini...</p>
-            </div>
-
-            <div class="form-grid">
-                <form id="create-course-form">
-                    <h3>Tambah Kursus</h3>
-                    <label>Judul Kursus
-                        <input type="text" name="title" placeholder="Algoritma Lanjut" required />
-                    </label>
-                    <label>Kredit
-                        <input type="number" name="credits" placeholder="3" min="1" required />
-                    </label>
-                    <label>Dosen Pengampu
-                        <input type="text" name="lecturer" placeholder="Dr. Andi" required />
-                    </label>
-                    <button type="submit">Simpan Kursus</button>
-                    <p class="status" id="create-course-status"></p>
-                </form>
-
-                <form id="update-course-form">
-                    <h3>Perbarui Kursus</h3>
-                    <label>ID Kursus
-                        <input type="number" name="id" placeholder="1" min="1" required />
-                    </label>
-                    <label>Judul Kursus
-                        <input type="text" name="title" placeholder="Judul baru" required />
-                    </label>
-                    <label>Kredit
-                        <input type="number" name="credits" placeholder="3" min="1" required />
-                    </label>
-                    <label>Dosen Pengampu
-                        <input type="text" name="lecturer" placeholder="Dr. Andi" required />
-                    </label>
-                    <button type="submit">Perbarui</button>
-                    <p class="status" id="update-course-status"></p>
-                </form>
-
-                <form id="delete-course-form">
-                    <h3>Hapus Kursus</h3>
-                    <label>ID Kursus
-                        <input type="number" name="id" placeholder="1" min="1" required />
-                    </label>
-                    <button type="submit" class="danger">Hapus</button>
-                    <p class="status" id="delete-course-status"></p>
-                </form>
             </div>
         </section>
     </main>
@@ -121,52 +49,26 @@
         // --- Konfigurasi ---
         const API_GATEWAY_URL = 'http://localhost:4000'; // Sesuai dengan API Gateway Anda (Port 4000)
         document.addEventListener('DOMContentLoaded', () => {
-            attachStudentFormHandlers();
-            attachCourseFormHandlers();
             fetchStudents();
             fetchCourses();
         });
 
         // --- Fungsi untuk Mengambil Data Siswa ---
         async function fetchStudents() {
-            const container = document.getElementById('student-data');
-            container.innerHTML = 'Memuat data...';
-
-            try {
-                // Memanggil API Gateway, yang kemudian memanggil Student Service
-                const response = await fetch(`${API_GATEWAY_URL}/gateway/users`);
-                const data = await response.json();
-
-                if (response.ok) {
-                    container.innerHTML = buildTable(data, ['ID', 'Nama', 'Email']);
-                } else {
-                    container.innerHTML = `<p class="error-msg">Gagal: ${data.message || response.statusText}</p>`;
-                }
-            } catch (error) {
-                console.error('Error fetching students:', error);
-                container.innerHTML = '<p class="error-msg">Terjadi kesalahan koneksi. Pastikan semua service (3001, 3002, 4000) berjalan.</p>';
-            }
+            await fetchWithState(
+                `${API_GATEWAY_URL}/gateway/users`,
+                'student-data',
+                ['ID', 'Nama', 'Email']
+            );
         }
 
         // --- Fungsi untuk Mengambil Data Kursus ---
         async function fetchCourses() {
-            const container = document.getElementById('course-data');
-            container.innerHTML = 'Memuat data...';
-
-            try {
-                // Memanggil API Gateway, yang kemudian memanggil Course Service
-                const response = await fetch(`${API_GATEWAY_URL}/gateway/courses`);
-                const data = await response.json();
-
-                if (response.ok) {
-                    container.innerHTML = buildTable(data, ['ID', 'Judul Kursus', 'Kredit']);
-                } else {
-                    container.innerHTML = `<p class="error-msg">Gagal: ${data.message || response.statusText}</p>`;
-                }
-            } catch (error) {
-                console.error('Error fetching courses:', error);
-                container.innerHTML = '<p class="error-msg">Terjadi kesalahan koneksi. Pastikan semua service (3001, 3002, 4000) berjalan.</p>';
-            }
+            await fetchWithState(
+                `${API_GATEWAY_URL}/gateway/courses`,
+                'course-data',
+                ['ID', 'Judul Kursus', 'Kredit', 'Dosen']
+            );
         }
 
         // --- Fungsi Pembantu untuk Membuat Tabel dari Data JSON ---
@@ -201,189 +103,27 @@
             return tableHTML;
         }
 
-        function setStatus(elementId, message, isError = false) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-            element.textContent = message;
-            element.classList.toggle('error-msg', isError);
+        function showError(container, message) {
+            container.innerHTML = `<p class="error-msg">${message}</p>`;
         }
 
-        async function requestGateway(url, options, statusId) {
-            setStatus(statusId, 'Memproses...');
+        async function fetchWithState(url, containerId, headers) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = 'Memuat data...';
+
             try {
-                const response = await fetch(url, options);
-                const text = await response.text();
-                let data = null;
-                if (text) {
-                    try {
-                        data = JSON.parse(text);
-                    } catch (err) {
-                        data = text;
-                    }
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    container.innerHTML = buildTable(data, headers);
+                } else {
+                    showError(container, `Gagal: ${data.message || response.statusText}`);
                 }
-                if (!response.ok) {
-                    const message = data?.message || response.statusText || 'Gagal memproses permintaan';
-                    throw new Error(message);
-                }
-                setStatus(statusId, 'Berhasil diproses');
-                return data;
             } catch (error) {
-                console.error('Gateway request error:', error);
-                setStatus(statusId, error.message || 'Terjadi kesalahan', true);
-                throw error;
+                console.error('Gateway fetch error:', error);
+                showError(container, 'Terjadi kesalahan koneksi. Pastikan semua service berjalan.');
             }
-        }
-
-        function attachStudentFormHandlers() {
-            const createForm = document.getElementById('create-student-form');
-            const updateForm = document.getElementById('update-student-form');
-            const deleteForm = document.getElementById('delete-student-form');
-
-            createForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(createForm);
-                const payload = {
-                    name: formData.get('name'),
-                    email: formData.get('email')
-                };
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/users`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }, 'create-student-status');
-                    createForm.reset();
-                    fetchStudents();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
-
-            updateForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(updateForm);
-                const id = formData.get('id');
-                if (!id) {
-                    setStatus('update-student-status', 'ID wajib diisi', true);
-                    return;
-                }
-                const payload = {
-                    name: formData.get('name'),
-                    email: formData.get('email')
-                };
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/users/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }, 'update-student-status');
-                    updateForm.reset();
-                    fetchStudents();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
-
-            deleteForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(deleteForm);
-                const id = formData.get('id');
-                if (!id) {
-                    setStatus('delete-student-status', 'ID wajib diisi', true);
-                    return;
-                }
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/users/${id}`, {
-                        method: 'DELETE'
-                    }, 'delete-student-status');
-                    deleteForm.reset();
-                    fetchStudents();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
-        }
-
-        function attachCourseFormHandlers() {
-            const createForm = document.getElementById('create-course-form');
-            const updateForm = document.getElementById('update-course-form');
-            const deleteForm = document.getElementById('delete-course-form');
-
-            createForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(createForm);
-                const credits = Number(formData.get('credits'));
-                if (Number.isNaN(credits)) {
-                    setStatus('create-course-status', 'Kredit harus berupa angka', true);
-                    return;
-                }
-                const payload = {
-                    title: formData.get('title'),
-                    credits,
-                    lecturer: formData.get('lecturer')
-                };
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/courses`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }, 'create-course-status');
-                    createForm.reset();
-                    fetchCourses();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
-
-            updateForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(updateForm);
-                const id = formData.get('id');
-                if (!id) {
-                    setStatus('update-course-status', 'ID wajib diisi', true);
-                    return;
-                }
-                const credits = Number(formData.get('credits'));
-                if (Number.isNaN(credits)) {
-                    setStatus('update-course-status', 'Kredit harus berupa angka', true);
-                    return;
-                }
-                const payload = {
-                    title: formData.get('title'),
-                    credits,
-                    lecturer: formData.get('lecturer')
-                };
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/courses/${id}`, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    }, 'update-course-status');
-                    updateForm.reset();
-                    fetchCourses();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
-
-            deleteForm?.addEventListener('submit', async (event) => {
-                event.preventDefault();
-                const formData = new FormData(deleteForm);
-                const id = formData.get('id');
-                if (!id) {
-                    setStatus('delete-course-status', 'ID wajib diisi', true);
-                    return;
-                }
-                try {
-                    await requestGateway(`${API_GATEWAY_URL}/gateway/courses/${id}`, {
-                        method: 'DELETE'
-                    }, 'delete-course-status');
-                    deleteForm.reset();
-                    fetchCourses();
-                } catch (_) {
-                    // status sudah ditangani
-                }
-            });
         }
     </script>
 </body>

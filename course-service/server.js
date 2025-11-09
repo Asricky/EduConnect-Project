@@ -1,11 +1,18 @@
 // course-service/server.js
 
-require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+const dotenv = require('dotenv');
+
+const localEnvPath = path.join(__dirname, '.env');
+const rootEnvPath = path.join(__dirname, '..', '.env');
+const envPath = fs.existsSync(localEnvPath) ? localEnvPath : rootEnvPath;
+dotenv.config({ path: envPath });
+
 const express = require('express');
 const mysql = require('mysql2/promise');
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const path = require('path');
 
 const app = express();
 const PORT = 3002; // PORT yang berbeda dari Student Service (3001)
