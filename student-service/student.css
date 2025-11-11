@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
 
 :root {
   --primary: #5b5fff;
@@ -13,7 +13,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Inter", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -23,28 +23,43 @@ body {
 
 /* TOPBAR */
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
   background: linear-gradient(135deg, var(--primary), var(--primary-2));
   color: white;
-  padding: 12px 28px;
+  padding: 14px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 6px 18px rgba(91, 95, 255, 0.25);
 }
 
 .brand {
-  font-weight: 700;
-}
-
-.topbar nav a {
-  color: #e5e7eb;
-  margin-left: 18px;
-  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #ffffff;
   text-decoration: none;
 }
 
+.topbar nav a {
+  color: #eef2ff;
+  margin-left: 10px;
+  font-size: 14px;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
 .topbar nav a.active {
-  font-weight: 600;
-  text-decoration: underline;
+  background: #ffffff;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.topbar nav a:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.16);
 }
 
 /* CONTENT */
