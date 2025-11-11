@@ -1,108 +1,163 @@
-/* frontend/style.css */
-body {
-  font-family: Arial, sans-serif;
+:root {
+  --primary: #5b5fff;
+  --primary-2: #9b5bff;
+  --bg: #f5f7fb;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+}
+
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #f4f7f6;
-  color: #333;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
-header {
-  background-color: #007bff;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 5px solid #0056b3;
+body {
+  background: var(--bg);
+  color: var(--text-main);
 }
 
-header h1 {
-  margin: 0;
-}
-
-main {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 20px;
-}
-
-.data-section {
-  background-color: white;
-  padding: 20px;
-  margin-bottom: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.data-section h2 {
-  color: #007bff;
-  border-bottom: 2px solid #e9ecef;
-  padding-bottom: 10px;
-  margin-top: 0;
-}
-
-/* Tombol */
-button {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  margin-bottom: 15px;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #218838;
-}
-
-/* Tabel Styling */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-table th, table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-}
-
-table th {
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-}
-
-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-.error-msg {
-  color: red;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  padding: 10px;
-  margin-top: 30px;
-  color: #6c757d;
-  font-size: 0.9em;
-}
-
-.section-header {
+/* ====== HERO / WELCOME ====== */
+.hero {
+  min-height: 100vh;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top left, #ffffff, #eef2ff);
+  padding: 24px;
 }
 
-.section-subtitle {
-  margin: 4px 0 0;
-  color: #6c757d;
-  font-size: 0.95rem;
+.hero-card {
+  background: #ffffff;
+  padding: 32px 40px;
+  border-radius: 24px;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.12);
+  max-width: 560px;
+  text-align: center;
+}
+
+.hero-card h1 {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.hero-card p {
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 10px 32px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(91, 95, 255, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(91, 95, 255, 0.5);
+}
+
+.link-tentang {
+  margin-top: 20px;
+  color: var(--text-muted);
+  text-decoration: underline;
+  font-size: 14px;
+}
+
+/* ====== SECTION FITUR (SHAPE) ====== */
+.fitur-section {
+  padding: 48px 20px 60px;
+  background: var(--bg);
+}
+
+.fitur-title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 28px;
+}
+
+.fitur-grid {
+  max-width: 800px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px;
+}
+
+.fitur-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px 20px;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.fitur-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12);
+}
+
+.fitur-card .icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.fitur-card h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.fitur-siswa {
+  background: #f0fff7;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.fitur-kursus {
+  background: #eef4ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.fitur-card p {
+  font-size: 13px;
+  margin-top: 4px;
+  color: #4b5563;
+}
+
+/* ====== SECTION TENTANG ====== */
+.about-section {
+  padding: 32px 20px 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ====== NAV SEDERHANA DI DASHBOARD ====== */
+.simple-nav {
+  padding: 14px 20px;
+  background: #f9fafb;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
+}
+
+.brand-link {
+  text-decoration: none;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 500;
 }

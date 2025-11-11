@@ -1,130 +1,22 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduConnect - Dashboard UTS</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>EduConnect – Home</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-
-    <header>
-        <h1>EduConnect Dashboard</h1>
-        <p>Menampilkan data dari dua layanan (Student Service & Course Service) via API Gateway.</p>
-    </header>
-
-    <main>
-        <section class="data-section">
-            <div class="section-header">
-                <div>
-                    <h2>🧑‍🎓 Daftar Siswa (Student Service)</h2>
-                    <p class="section-subtitle">Menampilkan data siswa yang sudah tersimpan di database kampus.</p>
-                </div>
-                <button onclick="fetchStudents()">Muat Ulang</button>
-            </div>
-            <div id="student-data" class="data-container">
-                <p>Data siswa akan muncul di sini...</p>
-            </div>
-        </section>
-
-        <section class="data-section">
-            <div class="section-header">
-                <div>
-                    <h2>📚 Daftar Kursus (Course Service)</h2>
-                    <p class="section-subtitle">Daftar mata kuliah aktif yang dikirim oleh Course Service.</p>
-                </div>
-                <button onclick="fetchCourses()">Muat Ulang</button>
-            </div>
-            <div id="course-data" class="data-container">
-                <p>Data kursus akan muncul di sini...</p>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; UTS EAI/WSD Project | Menggunakan API Gateway (Port 4000)</p>
-    </footer>
-
-    <script>
-        // --- Konfigurasi ---
-        const API_GATEWAY_URL = 'http://localhost:4000'; // Sesuai dengan API Gateway Anda (Port 4000)
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchStudents();
-            fetchCourses();
-        });
-
-        // --- Fungsi untuk Mengambil Data Siswa ---
-        async function fetchStudents() {
-            await fetchWithState(
-                `${API_GATEWAY_URL}/gateway/users`,
-                'student-data',
-                ['ID', 'Nama', 'Email']
-            );
-        }
-
-        // --- Fungsi untuk Mengambil Data Kursus ---
-        async function fetchCourses() {
-            await fetchWithState(
-                `${API_GATEWAY_URL}/gateway/courses`,
-                'course-data',
-                ['ID', 'Judul Kursus', 'Kredit', 'Dosen']
-            );
-        }
-
-        // --- Fungsi Pembantu untuk Membuat Tabel dari Data JSON ---
-        function buildTable(data, headers) {
-            if (!Array.isArray(data) || data.length === 0) {
-                return '<p>Tidak ada data ditemukan.</p>';
-            }
-
-            // Ambil kunci pertama dari objek pertama sebagai referensi kolom
-            const keys = Object.keys(data[0]);
-            
-            let tableHTML = '<table>';
-            
-            // Header
-            tableHTML += '<thead><tr>';
-            headers.forEach(header => {
-                tableHTML += `<th>${header}</th>`;
-            });
-            tableHTML += '</tr></thead>';
-
-            // Body
-            tableHTML += '<tbody>';
-            data.forEach(item => {
-                tableHTML += '<tr>';
-                keys.forEach(key => {
-                    tableHTML += `<td>${item[key]}</td>`;
-                });
-                tableHTML += '</tr>';
-            });
-            tableHTML += '</tbody></table>';
-            
-            return tableHTML;
-        }
-
-        function showError(container, message) {
-            container.innerHTML = `<p class="error-msg">${message}</p>`;
-        }
-
-        async function fetchWithState(url, containerId, headers) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = 'Memuat data...';
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                if (response.ok) {
-                    container.innerHTML = buildTable(data, headers);
-                } else {
-                    showError(container, `Gagal: ${data.message || response.statusText}`);
-                }
-            } catch (error) {
-                console.error('Gateway fetch error:', error);
-                showError(container, 'Terjadi kesalahan koneksi. Pastikan semua service berjalan.');
-            }
-        }
-    </script>
+  <!-- HERO / WELCOME SAJA -->
+  <section class="hero">
+    <div class="hero-card">
+      <h1>EduConnect</h1>
+      <p>
+        Selamat datang di EduConnect! Sistem layanan terhubung yang
+        berfokus pada pertukaran data antar entitas.
+      </p>
+      <!-- pindah ke halaman lain, bukan #fitur -->
+      <a href="dashboard.html" class="btn-primary">Mulai</a>
+    </div>
+  </section>
 </body>
 </html>
