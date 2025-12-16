@@ -1,159 +1,444 @@
-﻿# EduConnect
+﻿# EduConnect - Modern GraphQL Education Platform
 
-EduConnect adalah proyek microservice sederhana untuk mendemokan integrasi data akademik antara layanan manajemen siswa, manajemen mata kuliah, dan sebuah API Gateway yang menjadi pintu masuk frontend. Repository ini juga menyertakan halaman dashboard statis yang memvisualisasikan data melalui Gateway tersebut.
+🚀 **EduConnect** adalah platform manajemen pendidikan modern yang dibangun dengan **GraphQL**, **PostgreSQL**, **React**, dan **Docker**. Aplikasi ini menyediakan sistem CRUD lengkap untuk mengelola **Students**, **Courses**, dan **Enrollments** dengan antarmuka modern dan responsif.
 
-## Komponen Utama
+## 📸 Screenshots
 
-| Layanan / Modul | Port | Deskripsi Singkat | Berkas Utama |
-| --- | --- | --- | --- |
-| Student Service | 3001 | CRUD data siswa + dokumentasi Swagger | `student-service/server.js` |
-| Course Service | 3002 | CRUD data mata kuliah + endpoint integrasi `courses/by-user/:id` | `course-service/server.js` |
-| API Gateway | 4000 | Proxy request dari frontend ke kedua service, termasuk agregasi user-courses | `api-gateway/server.js` |
-| Frontend statis | 5000 (opsional) | `index.html`, `dashboard.html`, `student.html`, `course.html` yang melakukan fetch ke Gateway | akar repo & masing-masing folder service |
+> Modern dark theme dengan gradient styling dan smooth animations
 
-Semua service berbagi satu database MySQL (`educonnect_db`) dengan tiga tabel utama: `students`, `courses`, dan `enrollments`. Koneksi database dikonfigurasi melalui berkas `.env` di root repo dan otomatis dibaca oleh tiap service.
+## 🏗️ Arsitektur
 
-## Persyaratan Sistem
+```
+┌─────────────┐      ┌──────────────┐      ┌──────────────┐
+│   React     │─────▶│ Apollo       │─────▶│  PostgreSQL  │
+│  Frontend   │      │  GraphQL     │      │   Database   │
+│  (Port 5000)│◀─────│  Server      │◀─────│              │
+└─────────────┘      │  (Port 4000) │      └──────────────┘
+                     └──────────────┘
+```
 
-- **Node.js 18+** dan **npm** (untuk menjalankan service berbasis Express).  
-- **MySQL 8.x** atau kompatibel (mis. MariaDB) dengan akses untuk membuat database baru.  
-- **Git** (opsional) untuk cloning repository.  
-- **Alat impor SQL**: MySQL CLI atau GUI seperti MySQL Workbench tergantung preferensi.  
-- **Static file server** seperti VS Code Live Server atau `npx http-server` jika ingin menjalankan dashboard pada `http://localhost:5000` (dibutuhkan agar lolos konfigurasi CORS API Gateway).
+**Tech Stack:**
 
-## Struktur Folder Singkat
+- **Frontend:** React 18 + Vite + Apollo Client
+- **Backend:** Node.js + Apollo Server + Express
+- **Database:** PostgreSQL 15
+- **Orchestration:** Docker + Docker Compose
+
+## ✨ Fitur Utama
+
+### 🎓 Students Management
+
+- CRUD lengkap untuk data mahasiswa
+- Validasi email unique
+- Avatar dengan initial nama
+- Grid layout responsif
+
+### 📚 Courses Management
+
+- Manajemen mata kuliah
+- Credits tracking
+- Informasi dosen pengampu
+- Course enrollment statistics
+
+### ✅ Enrollments Management
+
+- Hubungkan mahasiswa dengan mata kuliah
+- Grade management (A, B+, A-, dll)
+- Visual grade badges dengan warna
+- Relasi data Student + Course
+
+### 📊 Dashboard
+
+- Summary cards dengan statistik real-time
+- Recent enrollments list
+- Popular courses grid
+- Average enrollments per student
+
+### 💅 Modern UI/UX
+
+- Dark theme dengan gradient accents
+- Smooth animations & transitions
+- Glassmorphism effects
+- Fully responsive design
+- Toast notifications
+
+## 🚀 Quick Start dengan Docker
+
+### Prerequisites
+
+- Docker Desktop installed
+- Docker Compose installed
+- Port 4000, 5000, dan 5432 available
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/Asricky/EduConnect-Project.git
+cd EduConnect-Project
+```
+
+### 2. Start dengan Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### 3. Akses Aplikasi
+
+- **Frontend:** http://localhost:5000
+- **GraphQL Playground:** http://localhost:4000/graphql
+- **Database:** localhost:5432
+
+### 4. Stop Services
+
+```bash
+docker-compose down
+```
+
+## 🛠️ Development Setup (Tanpa Docker)
+
+### 1. Install PostgreSQL
+
+Download dan install PostgreSQL 15+
+
+### 2. Setup Database
+
+```bash
+# Login ke psql
+psql -U postgres
+
+# Jalankan init script
+\i database/init.sql
+```
+
+### 3. Install Dependencies
+
+**Backend:**
+
+```bash
+cd backend
+npm install
+```
+
+**Frontend:**
+
+```bash
+cd frontend
+npm install
+```
+
+### 4. Configure Environment
+
+Edit `.env` file di root folder:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=educonnect
+DB_PASSWORD=educonnect123
+DB_NAME=educonnect_db
+GRAPHQL_PORT=4000
+FRONTEND_URL=http://localhost:5000
+```
+
+### 5. Start Services
+
+**Terminal 1 - Backend:**
+
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 - Frontend:**
+
+```bash
+cd frontend
+npm run dev
+```
+
+### 6. Akses Aplikasi
+
+- Frontend: http://localhost:5000
+- GraphQL: http://localhost:4000/graphql
+
+## 📡 GraphQL API
+
+### Schema Overview
+
+```graphql
+type Student {
+  id: ID!
+  name: String!
+  email: String!
+  createdAt: String
+}
+
+type Course {
+  id: ID!
+  title: String!
+  credits: Int!
+  lecturer: String!
+  createdAt: String
+}
+
+type Enrollment {
+  id: ID!
+  student: Student!
+  course: Course!
+  grade: String
+  createdAt: String
+}
+```
+
+### Example Queries
+
+**Get All Students:**
+
+```graphql
+query {
+  students {
+    id
+    name
+    email
+  }
+}
+```
+
+**Get Student Courses:**
+
+```graphql
+query {
+  studentCourses(studentId: "1") {
+    student {
+      name
+      email
+    }
+    courses {
+      title
+      credits
+      grade
+    }
+  }
+}
+```
+
+### Example Mutations
+
+**Create Student:**
+
+```graphql
+mutation {
+  createStudent(input: { name: "John Doe", email: "john@example.com" }) {
+    id
+    name
+    email
+  }
+}
+```
+
+**Create Enrollment:**
+
+```graphql
+mutation {
+  createEnrollment(input: { studentId: "1", courseId: "2", grade: "A" }) {
+    id
+    grade
+  }
+}
+```
+
+## 📁 Struktur Project
 
 ```
 EduConnect-Project/
-|- api-gateway/
-|- course-service/
-|- student-service/
-|- database_seed.sql
-|- .env
-|- index.html, dashboard.html, styles.css
-|- package.json
+├── backend/                 # GraphQL Backend
+│   ├── graphql/
+│   │   ├── schema.graphql   # GraphQL Schema
+│   │   └── resolvers/       # Query & Mutation Resolvers
+│   ├── db/                  # PostgreSQL Connection
+│   ├── server.js            # Apollo Server
+│   ├── package.json
+│   └── Dockerfile
+│
+├── frontend/                # React Frontend
+│   ├── src/
+│   │   ├── components/      # Reusable Components
+│   │   ├── pages/           # Dashboard, Students, Courses, Enrollments
+│   │   ├── graphql/         # Queries & Mutations
+│   │   └── styles/          # CSS dengan Modern Design
+│   ├── package.json
+│   ├── vite.config.js
+│   └── Dockerfile
+│
+├── database/
+│   └── init.sql             # PostgreSQL Schema & Seed Data
+│
+├── docker-compose.yml       # Multi-container Orchestration
+├── .env                     # Environment Variables
+└── README.md
 ```
 
-## Langkah Setup Lokal (dari Database hingga Berhasil Berjalan)
+## 🐳 Docker Services
 
-### 1. Siapkan Database MySQL
-1. Pastikan server MySQL aktif dan Anda mengetahui user/password yang akan dipakai (contoh: `root` tanpa password).  
-2. Buka terminal MySQL (CLI) atau MySQL Workbench.  
-3. Jalankan skrip seed yang tersedia agar database, tabel, dan data contoh otomatis dibuat:
-   ```sql
-   SOURCE /path/ke/EduConnect-Project/database_seed.sql;
-   ```
-   - Contoh Windows (PowerShell): `mysql -u root -p < database_seed.sql`.  
-   - Contoh Linux/macOS: `mysql -u root -p < database_seed.sql`.  
-4. Verifikasi hasilnya:
-   ```sql
-   USE educonnect_db;
-   SHOW TABLES;
-   SELECT COUNT(*) FROM students;
-   ```
-   Anda seharusnya melihat data contoh untuk `students`, `courses`, dan `enrollments`.  
-5. Jika menggunakan kredensial selain default, pastikan user tersebut memiliki hak akses (SELECT/INSERT/UPDATE/DELETE) ke `educonnect_db`.
+### PostgreSQL (postgres)
 
-### 2. Konfigurasi Variabel Lingkungan
-1. Di root repo sudah tersedia berkas `.env`. Jika belum, buat berdasarkan contoh berikut:
-   ```ini
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=
-   DB_NAME=educonnect_db
-   DB_PORT=3306
-   ```
-2. Nilai ini akan otomatis dibaca oleh Student Service dan Course Service (mereka mencari `.env` di folder layanan, lalu fallback ke root). Pastikan kredensialnya sesuai dengan setup MySQL Anda.
+- **Image:** postgres:15-alpine
+- **Port:** 5432
+- **Database:** educonnect_db
+- **Auto-initialize:** Runs init.sql on startup
 
-### 3. Instalasi Dependensi Node.js
-Lakukan instalasi di setiap folder yang memiliki `package.json`:
-```bash
-# Opsional: dependency global di root (untuk alat umum)
-npm install
+### Backend (backend)
 
-cd student-service
-npm install
+- **Build:** ./backend/Dockerfile
+- **Port:** 4000
+- **Depends:** postgres (healthy)
+- **GraphQL Endpoint:** /graphql
 
-cd ../course-service
-npm install
+### Frontend (frontend)
 
-cd ../api-gateway
-npm install
-```
-> Gunakan terminal terpisah atau jalankan perintah di atas satu per satu. Pastikan tidak ada error sebelum lanjut.
+- **Build:** ./frontend/Dockerfile
+- **Port:** 5000 (nginx)
+- **Depends:** backend
+- **Serves:** Production build
 
-### 4. Jalankan Seluruh Layanan Backend
-Jalankan masing-masing service di terminal terpisah agar log mudah dipantau.
+## 🔧 Environment Variables
 
-1. **Student Service (port 3001)**
-   ```bash
-   cd student-service
-   npm start  # atau: node server.js
-   ```
-   - Swagger tersedia di `http://localhost:3001/api-docs`.
+| Variable       | Description           | Default               |
+| -------------- | --------------------- | --------------------- |
+| `DB_HOST`      | PostgreSQL host       | postgres              |
+| `DB_PORT`      | PostgreSQL port       | 5432                  |
+| `DB_USER`      | Database user         | educonnect            |
+| `DB_PASSWORD`  | Database password     | educonnect123         |
+| `DB_NAME`      | Database name         | educonnect_db         |
+| `GRAPHQL_PORT` | Backend port          | 4000                  |
+| `FRONTEND_URL` | Frontend URL for CORS | http://localhost:5000 |
 
-2. **Course Service (port 3002)**
-   ```bash
-   cd course-service
-   npm start
-   ```
-   - Swagger tersedia di `http://localhost:3002/api-docs`.
-   - Endpoint integrasi `GET /courses/by-user/:userId` akan dipakai oleh Gateway.
+## 🧪 Testing
 
-3. **API Gateway (port 4000)**
-   ```bash
-   cd api-gateway
-   npm start
-   ```
-   - Pastikan kedua service di atas sudah hidup sebelum Gateway dijalankan untuk menghindari error proxy.
-   - Gateway akan menerima request frontend dan meneruskannya ke service terkait.
-
-### 5. Jalankan Antarmuka Web (Opsional tapi Disarankan)
-Frontend statis berada di root (`index.html`, `dashboard.html`) dan masing-masing service memiliki halaman khusus (`student-service/student.html`, `course-service/course.html`).  
-Karena API Gateway hanya mengizinkan origin `http://localhost:5000`, jalankan static server pada port tersebut, misalnya dengan `http-server`:
+### Test GraphQL API dengan curl
 
 ```bash
-cd EduConnect-Project
-npx http-server . -p 5000
-# atau gunakan VS Code Live Server dan set port ke 5000
+# Get all students
+curl -X POST http://localhost:4000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ students { id name email } }"}'
+
+# Create student
+curl -X POST http://localhost:4000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "mutation { createStudent(input: { name: \"Alice\", email: \"alice@test.com\" }) { id name } }"}'
 ```
 
-Setelah server statis aktif:
-- `http://localhost:5000/index.html`: Landing page.  
-- `http://localhost:5000/dashboard.html`: Menampilkan ringkasan data siswa/kursus.  
-- `http://localhost:5000/student-service/student.html`: CRUD siswa via API Gateway.  
-- `http://localhost:5000/course-service/course.html`: CRUD mata kuliah via API Gateway.
+### Test dengan GraphQL Playground
 
-### 6. Verifikasi API di Lokal
-Gunakan cURL/Postman untuk memastikan service menjawab dengan benar via Gateway:
+Buka http://localhost:4000/graphql dan gunakan interactive playground untuk testing.
+
+## 📦 Production Deployment
+
+### Build Docker Images
+
 ```bash
-# Cek daftar siswa
-curl http://localhost:4000/gateway/users
-
-# Tambah siswa baru
-curl -X POST http://localhost:4000/gateway/users ^
-     -H "Content-Type: application/json" ^
-     -d "{\"name\": \"Dina Rahma\", \"email\": \"dina.rahma@educonnect.id\"}"
-
-# Ambil daftar kursus
-curl http://localhost:4000/gateway/courses
-
-# Lihat kursus yang diambil siswa ID 1
-curl http://localhost:4000/gateway/user-courses/1
+docker-compose build
 ```
-Jika response berhasil, dashboard dan halaman detail akan dapat memuat data yang sama.
 
-### 7. Dokumentasi Swagger
-- `http://localhost:3001/api-docs`: Dokumentasi Student Service (`student-service/swagger.yaml`).  
-- `http://localhost:3002/api-docs`: Dokumentasi Course Service (`course-service/swagger.yaml`).  
-Swagger memudahkan pengujian manual per endpoint sebelum mengintegrasikannya ke Gateway.
+### Push to Container Registry
 
-### 8. Troubleshooting Umum
-- **Koneksi database gagal**: cek kembali isi `.env`, pastikan `DB_HOST` dapat diakses dan user MySQL memiliki izin.  
-- **Port sudah terpakai**: hentikan aplikasi lain atau ubah konstanta `PORT` di tiap `server.js` (pastikan Gateway ikut diperbarui).  
-- **CORS error di browser**: dashboard harus dilayani dari `http://localhost:5000`. Jika memakai port berbeda, ubah konfigurasi `cors({ origin: 'http://localhost:5000' })` di `api-gateway/server.js`.  
-- **Gateway tidak mengembalikan data**: periksa log terminal Student/Course Service; biasanya error kredensial DB atau service mati akan terlihat di sana.  
-- **Data preview kosong**: jalankan ulang skrip `database_seed.sql` atau tambah data melalui halaman CRUD/Swagger.
+```bash
+docker tag educonnect-backend:latest your-registry/educonnect-backend
+docker tag educonnect-frontend:latest your-registry/educonnect-frontend
+docker push your-registry/educonnect-backend
+docker push your-registry/educonnect-frontend
+```
+
+### Deploy Options
+
+- **Railway:** Deploy PostgreSQL + Backend + Frontend
+- **Heroku:** Use Heroku Postgres + Container deployment
+- **AWS:** ECS/Fargate + RDS PostgreSQL
+- **DigitalOcean:** App Platform + Managed Database
+
+## 🐛 Troubleshooting
+
+### Port Already in Use
+
+```bash
+# Check running containers
+docker ps
+
+# Stop specific container
+docker stop educonnect-backend
+
+# Or stop all
+docker-compose down
+```
+
+### Database Connection Failed
+
+```bash
+# Check postgres health
+docker logs educonnect-postgres
+
+# Restart postgres
+docker-compose restart postgres
+```
+
+### Frontend Can't Connect to Backend
+
+- Check CORS settings in backend/server.js
+- Verify FRONTEND_URL environment variable
+- Check Vite proxy configuration
+
+### Clear All Data
+
+```bash
+# Stop and remove volumes
+docker-compose down -v
+
+# Restart fresh
+docker-compose up -d
+```
+
+## 📚 Migration dari REST Version
+
+File-file REST API lama telah di-archive di folder `old-rest-version/`:
+
+- api-gateway/
+- student-service/
+- course-service/
+- \*.html files
+- styles.css
+- database_seed.sql (MySQL)
+
+Untuk kembali ke REST version:
+
+```bash
+git checkout <commit-before-graphql>
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open Pull Request
+
+## 📄 License
+
+This project is licensed under the ISC License.
+
+## 👨‍💻 Author
+
+**Asricky**
+
+- GitHub: [@Asricky](https://github.com/Asricky)
+- Repository: [EduConnect-Project](https://github.com/Asricky/EduConnect-Project)
 
 ---
-Dengan mengikuti langkah-langkah di atas, Anda dapat menyiapkan database, menjalankan ketiga service, serta mengakses dashboard EduConnect sepenuhnya di lingkungan lokal Anda. Selamat mencoba!
+
+⭐ **Star this repo** if you find it helpful!
+
+🐛 Found a bug? Open an issue!
+
+💡 Have suggestions? Create a pull request!

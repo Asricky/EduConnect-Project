@@ -1,0 +1,161 @@
+.enrollments-page {
+  padding: 2rem 0;
+  min-height: calc(100vh - 80px);
+}
+
+/* Enrollments List */
+.enrollments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.enrollment-card {
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.enrollment-card:hover {
+  transform: translateX(8px);
+}
+
+.enrollment-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Student Info */
+.enrollment-student-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 250px;
+}
+
+.student-avatar-small {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.enrollment-student-name {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.enrollment-student-email {
+  font-size: 0.875rem;
+}
+
+/* Course Info */
+.enrollment-course-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 250px;
+}
+
+.course-icon-small {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.enrollment-course-title {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.enrollment-course-credits {
+  font-size: 0.875rem;
+}
+
+/* Grade Badge */
+.enrollment-grade {
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Actions */
+.enrollment-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Edit Info Card */
+.enrollment-edit-info {
+  background: var(--bg-tertiary);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.enrollment-edit-info p {
+  margin-bottom: 0.5rem;
+}
+
+.enrollment-edit-info p:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .enrollment-main {
+    gap: 1.5rem;
+  }
+
+  .enrollment-student-info,
+  .enrollment-course-info {
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .enrollments-page {
+    padding: 1rem 0;
+  }
+
+  .enrollment-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .enrollment-main {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .enrollment-student-info,
+  .enrollment-course-info {
+    min-width: auto;
+  }
+
+  .enrollment-grade {
+    text-align: center;
+  }
+
+  .enrollment-actions {
+    width: 100%;
+  }
+
+  .enrollment-actions .btn {
+    flex: 1;
+  }
+}
