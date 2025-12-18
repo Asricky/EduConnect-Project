@@ -55,6 +55,18 @@
   opacity: 0.9;
 }
 
+<<<<<<< Updated upstream
+=======
+/* Course Icon SVG */
+.course-icon-svg {
+  color: var(--color-primary);
+  opacity: 0.9;
+  margin: 0 auto 0.5rem;
+}
+
+
+/* Course Title */
+>>>>>>> Stashed changes
 .course-title {
   margin: 0 0 1rem 0;
   font-size: 1.125rem;
@@ -112,6 +124,7 @@
 .course-actions .btn {
   flex: 1;
   min-width: 0;
+<<<<<<< Updated upstream
 }
 
 <<<<<<< Updated upstream
@@ -128,7 +141,10 @@
   border-radius: 1rem;
   padding: 3rem 2rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+=======
+>>>>>>> Stashed changes
 }
+
 
 /* Empty State */
 .text-center {

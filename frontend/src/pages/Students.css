@@ -98,6 +98,7 @@
   min-width: 0;
 }
 
+<<<<<<< Updated upstream
 /* Modal Buttons */
 .modal-buttons {
   margin-top: 1.5rem;
@@ -117,6 +118,11 @@
 
 .error-message {
   padding: 2rem;
+=======
+
+/* Empty State */
+.text-center {
+>>>>>>> Stashed changes
   text-align: center;
 }
 
