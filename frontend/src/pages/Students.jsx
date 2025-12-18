@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import toast from 'react-hot-toast';
+import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { GET_STUDENTS } from '../graphql/queries';
 import { CREATE_STUDENT, UPDATE_STUDENT, DELETE_STUDENT } from '../graphql/mutations';
 import Modal from '../components/Modal';
@@ -103,7 +104,7 @@ const Students = () => {
             <p className="text-muted">Manage all student records</p>
           </div>
           <button className="btn btn-primary" onClick={() => handleOpenModal()}>
-            ➕ Add Student
+            <Plus className="w-4 h-4" /> Add Student
           </button>
         </div>
 
@@ -129,14 +130,14 @@ const Students = () => {
                     onClick={() => handleOpenModal(student)}
                     disabled={updating}
                   >
-                    ✏️ Edit
+                    <Pencil className="w-4 h-4" /> Edit
                   </button>
                   <button
                     className="btn btn-sm btn-danger"
                     onClick={() => handleDelete(student.id, student.name)}
                     disabled={deleting}
                   >
-                    🗑️ Delete
+                    <Trash2 className="w-4 h-4" /> Delete
                   </button>
                 </div>
               </div>

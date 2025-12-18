@@ -93,11 +93,19 @@
 
 .student-actions .btn {
   flex: 1;
+  min-width: 0;
 }
 
+<<<<<<< Updated upstream
 /* Modal Buttons */
 .modal-buttons {
   margin-top: 1.5rem;
+=======
+
+/* Empty State */
+.text-center {
+  text-align: center;
+>>>>>>> Stashed changes
 }
 
 .flex-1 {

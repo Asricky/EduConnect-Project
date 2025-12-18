@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import toast from 'react-hot-toast';
+import { Plus, Pencil, Trash2, BookOpen, Star, GraduationCap, Hash } from 'lucide-react';
 import { GET_COURSES } from '../graphql/queries';
 import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE } from '../graphql/mutations';
 import Modal from '../components/Modal';
@@ -119,7 +120,7 @@ const Courses = () => {
             <p className="text-muted">Manage all course offerings</p>
           </div>
           <button className="btn btn-primary" onClick={() => handleOpenModal()}>
-            ➕ Add Course
+            <Plus className="w-4 h-4" /> Add Course
           </button>
         </div>
 
@@ -131,19 +132,19 @@ const Courses = () => {
           <div className="courses-grid">
             {courses.map((course) => (
               <div key={course.id} className="course-card card">
-                <div className="course-icon">📖</div>
+                <BookOpen className="course-icon-svg" size={48} />
                 <h3 className="course-title">{course.title}</h3>
                 <div className="course-details">
                   <div className="course-detail-item">
-                    <span className="detail-icon">⭐</span>
+                    <Star className="detail-icon-svg" size={18} />
                     <span className="detail-text">{course.credits} Credits</span>
                   </div>
                   <div className="course-detail-item">
-                    <span className="detail-icon">👨‍🏫</span>
+                    <GraduationCap className="detail-icon-svg" size={18} />
                     <span className="detail-text">{course.lecturer}</span>
                   </div>
                   <div className="course-detail-item">
-                    <span className="detail-icon">🆔</span>
+                    <Hash className="detail-icon-svg" size={18} />
                     <span className="detail-text text-muted">ID: {course.id}</span>
                   </div>
                 </div>
@@ -153,14 +154,14 @@ const Courses = () => {
                     onClick={() => handleOpenModal(course)}
                     disabled={updating}
                   >
-                    ✏️ Edit
+                    <Pencil className="w-4 h-4" /> Edit
                   </button>
                   <button
                     className="btn btn-sm btn-danger"
                     onClick={() => handleDelete(course.id, course.title)}
                     disabled={deleting}
                   >
-                    🗑️ Delete
+                    <Trash2 className="w-4 h-4" /> Delete
                   </button>
                 </div>
               </div>

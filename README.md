@@ -1,74 +1,98 @@
 ﻿# EduConnect - Modern GraphQL Education Platform
 
-🚀 **EduConnect** adalah platform manajemen pendidikan modern yang dibangun dengan **GraphQL**, **PostgreSQL**, **React**, dan **Docker**. Aplikasi ini menyediakan sistem CRUD lengkap untuk mengelola **Students**, **Courses**, dan **Enrollments** dengan antarmuka modern dan responsif.
-
-## 📸 Screenshots
-
-> Modern dark theme dengan gradient styling dan smooth animations
-
-## 🏗️ Arsitektur
-
-```
-┌─────────────┐      ┌──────────────┐      ┌──────────────┐
-│   React     │─────▶│ Apollo       │─────▶│  PostgreSQL  │
-│  Frontend   │      │  GraphQL     │      │   Database   │
-│  (Port 5000)│◀─────│  Server      │◀─────│              │
-└─────────────┘      │  (Port 4000) │      └──────────────┘
-                     └──────────────┘
-```
-
-**Tech Stack:**
-
-- **Frontend:** React 18 + Vite + Apollo Client
-- **Backend:** Node.js + Apollo Server + Express
-- **Database:** PostgreSQL 15
-- **Orchestration:** Docker + Docker Compose
+🚀 **EduConnect** adalah platform manajemen pendidikan modern yang dibangun dengan **GraphQL**, **PostgreSQL**, **React**, dan **Docker**. Aplikasi ini menyediakan sistem CRUD lengkap untuk mengelola **Students**, **Courses**, dan **Enrollments** dengan ant armuka modern, responsif, dan user-friendly.
 
 ## ✨ Fitur Utama
 
 ### 🎓 Students Management
 
-- CRUD lengkap untuk data mahasiswa
-- Validasi email unique
+- CRUD lengkap untuk data mahasiswa dengan validasi
 - Avatar dengan initial nama
-- Grid layout responsif
+- Grid layout responsif dengan hover effects
+- Real-time data synchronization
 
 ### 📚 Courses Management
 
-- Manajemen mata kuliah
-- Credits tracking
-- Informasi dosen pengampu
+- Manajemen mata kuliah dengan credit tracking
+- Informasi lecturer lengkap
+- Visual icons untuk credits, lecturer, dan course ID
 - Course enrollment statistics
 
 ### ✅ Enrollments Management
 
 - Hubungkan mahasiswa dengan mata kuliah
-- Grade management (A, B+, A-, dll)
-- Visual grade badges dengan warna
-- Relasi data Student + Course
+- Grade management (A, B+, A-, dll) dengan color-coded badges
+- Visual interface dengan student dan course information
+- Edit grade functionality
 
 ### 📊 Dashboard
 
-- Summary cards dengan statistik real-time
+- Summary cards dengan real-time statistics
 - Recent enrollments list
 - Popular courses grid
-- Average enrollments per student
+- Average enrollments per student analytics
 
-### 💅 Modern UI/UX
+### � Modern UI/UX Features
 
-- Dark theme dengan gradient accents
-- Smooth animations & transitions
-- Glassmorphism effects
-- Fully responsive design
-- Toast notifications
+- **Professional Icons**: Lucide React icons untuk konsistensi visual
+- **Enhanced Modals**: High-contrast readable forms dengan better spacing
+- **Modern Buttons**: Gradient styling dengan hover animations
+- **Responsive Design**: Mobile-friendly di semua devices
+- **Dark Theme Support**: Clean dark mode dengan green accents
+- **Toast Notifications**: Real-time feedback untuk user actions
+- **Smooth Animations**: Transitions dan micro-interactions
 
-## 🚀 Quick Start dengan Docker
+## 🏗️ Architecture
+
+```
+┌─────────────────┐      ┌───────────────────┐      ┌──────────────────┐
+│   React UI      │─────▶│  Apollo GraphQL   │─────▶│  PostgreSQL      │
+│  (Vite + React) │      │    Server         │      │  (2 Databases)   │
+│   Port 5000     │◀─────│   Port 4000       │◀─────│  Ports 5432/5433 │
+└─────────────────┘      └───────────────────┘      └──────────────────┘
+       │                           │
+       │                           │
+  Lucide Icons              GraphQL Schema
+   Tailwind CSS             Query Resolvers
+```
+
+### Tech Stack
+
+**Frontend:**
+
+- React 18 with Hooks
+- Vite (Build tool)
+- Apollo Client (GraphQL client)
+- Lucide React (Modern icon library)
+- Tailwind CSS v4
+- React Hot Toast (Notifications)
+- React Router (Navigation)
+
+**Backend:**
+
+- Node.js 18+
+- Apollo Server
+- Express.js
+- GraphQL
+- PostgreSQL Driver
+
+**Database:**
+
+- PostgreSQL 15 Alpine
+- Separate databases for Students & Courses with enrollment relations
+
+**DevOps:**
+
+- Docker & Docker Compose
+- Multi-stage builds
+- Nginx (Production frontend server)
+
+## 🚀 Quick Start with Docker
 
 ### Prerequisites
 
 - Docker Desktop installed
-- Docker Compose installed
-- Port 4000, 5000, dan 5432 available
+- Ports 4000, 5000, 5432, 5433 available
 
 ### 1. Clone Repository
 
@@ -77,41 +101,58 @@ git clone https://github.com/Asricky/EduConnect-Project.git
 cd EduConnect-Project
 ```
 
-### 2. Start dengan Docker Compose
+### 2. Launch All Services
 
 ```bash
-docker-compose up -d
+docker-compose up -d --build
 ```
 
-### 3. Akses Aplikasi
+This will:
+
+- Create 2 PostgreSQL databases (students & courses)
+- Build and start GraphQL backend
+- Build and start React frontend
+- Initialize database schema automatically
+
+### 3. Access Application
 
 - **Frontend:** http://localhost:5000
 - **GraphQL Playground:** http://localhost:4000/graphql
-- **Database:** localhost:5432
+- **Database Students:** localhost:5432
+- **Database Courses:** localhost:5433
 
-### 4. Stop Services
+### 4. Stop All Services
 
 ```bash
 docker-compose down
 ```
 
-## 🛠️ Development Setup (Tanpa Docker)
-
-### 1. Install PostgreSQL
-
-Download dan install PostgreSQL 15+
-
-### 2. Setup Database
+### 5. Update After Code Changes
 
 ```bash
-# Login ke psql
-psql -U postgres
+# Stop and rebuild specific service
+docker-compose down frontend
+docker-compose up -d --build frontend
 
-# Jalankan init script
-\i database/init.sql
+# Or rebuild everything
+docker-compose down
+docker-compose up -d --build
 ```
 
-### 3. Install Dependencies
+## 🛠️ Development Setup (Without Docker)
+
+### 1. Setup Databases
+
+```bash
+# Login to PostgreSQL
+psql -U postgres
+
+# Run initialization scripts
+\i database/init-students.sql
+\i database/init-courses.sql
+```
+
+### 2. Install Dependencies
 
 **Backend:**
 
@@ -127,44 +168,54 @@ cd frontend
 npm install
 ```
 
-### 4. Configure Environment
+### 3. Configure Environment
 
-Edit `.env` file di root folder:
+Create `.env` file in root:
 
 ```env
-DB_HOST=localhost
-DB_PORT=5432
+# Students Database
+DB_HOST_STUDENTS=localhost
+DB_PORT_STUDENTS=5432
+DB_NAME_STUDENTS=educonnect_students_db
+
+# Courses Database
+DB_HOST_COURSES=localhost
+DB_PORT_COURSES=5433
+DB_NAME_COURSES=educonnect_courses_db
+
+# Common Database Config
 DB_USER=educonnect
 DB_PASSWORD=educonnect123
-DB_NAME=educonnect_db
+
+# Backend
 GRAPHQL_PORT=4000
-FRONTEND_URL=http://localhost:5000
+NODE_ENV=development
+
+# Frontend
+FRONTEND_URL=http://localhost:5173
 ```
 
-### 5. Start Services
+### 4. Start Development Servers
 
-**Terminal 1 - Backend:**
+**Backend (Terminal 1):**
 
 ```bash
 cd backend
 npm run dev
+# Server: http://localhost:4000
 ```
 
-**Terminal 2 - Frontend:**
+**Frontend (Terminal 2):**
 
 ```bash
 cd frontend
 npm run dev
+# Server: http://localhost:5173
 ```
-
-### 6. Akses Aplikasi
-
-- Frontend: http://localhost:5000
-- GraphQL: http://localhost:4000/graphql
 
 ## 📡 GraphQL API
 
-### Schema Overview
+### Core Types
 
 ```graphql
 type Student {
@@ -201,11 +252,12 @@ query {
     id
     name
     email
+    createdAt
   }
 }
 ```
 
-**Get Student Courses:**
+**Get Student with Courses:**
 
 ```graphql
 query {
@@ -219,6 +271,19 @@ query {
       credits
       grade
     }
+  }
+}
+```
+
+**Get Dashboard Stats:**
+
+```graphql
+query {
+  dashboardStats {
+    totalStudents
+    totalCourses
+    totalEnrollments
+    averageEnrollmentsPerStudent
   }
 }
 ```
@@ -237,192 +302,313 @@ mutation {
 }
 ```
 
-**Create Enrollment:**
+**Create Enrollment with Grade:**
 
 ```graphql
 mutation {
   createEnrollment(input: { studentId: "1", courseId: "2", grade: "A" }) {
     id
+    student {
+      name
+    }
+    course {
+      title
+    }
     grade
   }
 }
 ```
 
-## 📁 Struktur Project
+**Update Student:**
+
+```graphql
+mutation {
+  updateStudent(
+    id: "1"
+    input: { name: "Jane Doe", email: "jane@example.com" }
+  ) {
+    id
+    name
+    email
+  }
+}
+```
+
+## 📁 Project Structure
 
 ```
 EduConnect-Project/
-├── backend/                 # GraphQL Backend
+├── backend/                      # GraphQL Backend
+│   ├── db/
+│   │   └── index.js             # PostgreSQL connections (2 databases)
 │   ├── graphql/
-│   │   ├── schema.graphql   # GraphQL Schema
-│   │   └── resolvers/       # Query & Mutation Resolvers
-│   ├── db/                  # PostgreSQL Connection
-│   ├── server.js            # Apollo Server
+│   │   ├── schema.graphql       # Complete GraphQL schema
+│   │   └── resolvers/
+│   │       ├── index.js         # Resolver aggregator
+│   │       ├── studentResolvers.js
+│   │       ├── courseResolvers.js
+│   │       └── enrollmentResolvers.js
+│   ├── server.js                # Apollo Server setup
 │   ├── package.json
-│   └── Dockerfile
+│   └── Dockerfile               # Backend container
 │
-├── frontend/                # React Frontend
+├── frontend/                     # React Frontend
 │   ├── src/
-│   │   ├── components/      # Reusable Components
-│   │   ├── pages/           # Dashboard, Students, Courses, Enrollments
-│   │   ├── graphql/         # Queries & Mutations
-│   │   └── styles/          # CSS dengan Modern Design
+│   │   ├── components/
+│   │   │   ├── AnimatedBackground.jsx
+│   │   │   ├── Modal.jsx        # Enhanced modal w/ X icon
+│   │   │   ├── Navbar.jsx       # Nav with Lucide icons
+│   │   │   └── ThemeToggle.jsx
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Students.jsx     # CRUD with icons
+│   │   │   ├── Courses.jsx      # CRUD with icons
+│   │   │   └── Enrollments.jsx  # CRUD with icons
+│   │   ├── graphql/
+│   │   │   ├── queries.js       # All queries
+│   │   │   └── mutations.js     # All mutations
+│   │   ├── styles/
+│   │   │   └── index.css        # Global styles + components
+│   │   ├── App.jsx
+│   │   └── main.jsx
 │   ├── package.json
 │   ├── vite.config.js
-│   └── Dockerfile
+│   └── Dockerfile               # Multi-stage build + Nginx
 │
 ├── database/
-│   └── init.sql             # PostgreSQL Schema & Seed Data
+│   ├── init-students.sql        # Students DB schema & seeds
+│   └── init-courses.sql         # Courses DB schema & seeds
 │
-├── docker-compose.yml       # Multi-container Orchestration
-├── .env                     # Environment Variables
+├── docker-compose.yml           # Multi-container orchestration
 └── README.md
 ```
 
+## 🎨 UI/UX Improvements
+
+### Recent Enhancements
+
+1. **Lucide React Icons** (replaced all emojis)
+
+   - Professional SVG icons throughout the app
+   - Consistent icon sizing and colors
+   - Better accessibility
+
+2. **Enhanced Modal Readability**
+
+   - Increased label font-weight (600)
+   - Better form spacing (1.5rem between fields)
+   - Improved input padding (0.875rem)
+   - Enhanced focus states (4px shadow)
+   - Modal buttons with border separator
+
+3. **Modern Button Styling**
+
+   - Primary: Green gradient with hover lift
+   - Secondary: White/gray with border
+   - Danger: Red gradient for delete actions
+   - Consistent sizing and spacing
+
+4. **Responsive Grid Layouts**
+   - Students: Auto-fill grid with min 300px cards
+   - Courses: Card-based layout with icons
+   - Enrollments: List view with student/course info
+
 ## 🐳 Docker Services
 
-### PostgreSQL (postgres)
+### Service: postgres-students
 
 - **Image:** postgres:15-alpine
 - **Port:** 5432
-- **Database:** educonnect_db
-- **Auto-initialize:** Runs init.sql on startup
+- **Database:** educonnect_students_db
+- **Tables:** students, enrollments
+- **Auto-init:** Runs init-students.sql
 
-### Backend (backend)
+### Service: postgres-courses
+
+- **Image:** postgres:15-alpine
+- **Port:** 5433
+- **Database:** educonnect_courses_db
+- **Tables:** courses
+- **Auto-init:** Runs init-courses.sql
+
+### Service: backend
 
 - **Build:** ./backend/Dockerfile
 - **Port:** 4000
-- **Depends:** postgres (healthy)
-- **GraphQL Endpoint:** /graphql
+- **Depends:** Both PostgreSQL (healthy status)
+- **GraphQL:** /graphql endpoint
+- **Health:** /health endpoint
 
-### Frontend (frontend)
+### Service: frontend
 
-- **Build:** ./frontend/Dockerfile
-- **Port:** 5000 (nginx)
-- **Depends:** backend
-- **Serves:** Production build
+- **Build:** Multi-stage (Node + Nginx)
+- **Port:** 5000
+- **Build time:** ~15-20 seconds
+- **Size:** ~82MB (optimized Alpine)
+- **Serves:** Production build via Nginx
+- **Routing:** SPA support with try_files
 
-## 🔧 Environment Variables
+## 🧪 Testing & Verification
 
-| Variable       | Description           | Default               |
-| -------------- | --------------------- | --------------------- |
-| `DB_HOST`      | PostgreSQL host       | postgres              |
-| `DB_PORT`      | PostgreSQL port       | 5432                  |
-| `DB_USER`      | Database user         | educonnect            |
-| `DB_PASSWORD`  | Database password     | educonnect123         |
-| `DB_NAME`      | Database name         | educonnect_db         |
-| `GRAPHQL_PORT` | Backend port          | 4000                  |
-| `FRONTEND_URL` | Frontend URL for CORS | http://localhost:5000 |
+### Test GraphQL API
 
-## 🧪 Testing
-
-### Test GraphQL API dengan curl
+**Using curl:**
 
 ```bash
-# Get all students
+# Health check
+curl http://localhost:4000/health
+
+# Get students
 curl -X POST http://localhost:4000/graphql \
   -H "Content-Type: application/json" \
   -d '{"query": "{ students { id name email } }"}'
-
-# Create student
-curl -X POST http://localhost:4000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "mutation { createStudent(input: { name: \"Alice\", email: \"alice@test.com\" }) { id name } }"}'
 ```
 
-### Test dengan GraphQL Playground
+**Using GraphQL Playground:**
 
-Buka http://localhost:4000/graphql dan gunakan interactive playground untuk testing.
+1. Open http://localhost:4000/graphql
+2. Use interactive UI to test queries/mutations
+3. Explore schema documentation
+
+### Test Frontend
+
+1. Open http://localhost:5000
+2. Navigate between pages using navbar
+3. Test CRUD operations:
+   - Create new student/course/enrollment
+   - Edit existing records
+   - Delete records (with confirmation)
+4. Check modal readability
+5. Verify icon rendering
+6. Test form validation
 
 ## 📦 Production Deployment
 
-### Build Docker Images
+### Build for Production
 
 ```bash
+# Build all images
 docker-compose build
+
+# Test production build locally
+docker-compose up
 ```
 
-### Push to Container Registry
+### Deploy to Cloud
+
+**Railway:**
 
 ```bash
-docker tag educonnect-backend:latest your-registry/educonnect-backend
-docker tag educonnect-frontend:latest your-registry/educonnect-frontend
-docker push your-registry/educonnect-backend
-docker push your-registry/educonnect-frontend
+# Install Railway CLI
+npm install -g @railway/cli
+
+# Login and deploy
+railway login
+railway init
+railway up
 ```
 
-### Deploy Options
+**AWS ECS:**
 
-- **Railway:** Deploy PostgreSQL + Backend + Frontend
-- **Heroku:** Use Heroku Postgres + Container deployment
-- **AWS:** ECS/Fargate + RDS PostgreSQL
-- **DigitalOcean:** App Platform + Managed Database
+1. Push images to ECR
+2. Create ECS task definitions
+3. Configure RDS PostgreSQL
+4. Set up load balancer
+
+**DigitalOcean:**
+
+1. Use App Platform
+2. Connect GitHub repo
+3. Configure database
+4. Deploy with auto-build
+
+## 🔧 Environment Variables
+
+| Variable           | Description         | Default                | Example    |
+| ------------------ | ------------------- | ---------------------- | ---------- |
+| `DB_HOST_STUDENTS` | Students DB host    | postgres-students      | localhost  |
+| `DB_PORT_STUDENTS` | Students DB port    | 5432                   | 5432       |
+| `DB_NAME_STUDENTS` | Students database   | educonnect_students_db | -          |
+| `DB_HOST_COURSES`  | Courses DB host     | postgres-courses       | localhost  |
+| `DB_PORT_COURSES`  | Courses DB port     | 5432                   | 5433       |
+| `DB_NAME_COURSES`  | Courses database    | educonnect_courses_db  | -          |
+| `DB_USER`          | Database user       | educonnect             | educonnect |
+| `DB_PASSWORD`      | Database password   | educonnect123          | -          |
+| `GRAPHQL_PORT`     | Backend server port | 4000                   | 4000       |
+| `FRONTEND_URL`     | Frontend URL (CORS) | http://localhost:5000  | -          |
+| `NODE_ENV`         | Environment         | development            | production |
 
 ## 🐛 Troubleshooting
+
+### Container Issues
+
+```bash
+# View all containers
+docker-compose ps
+
+# View logs
+docker-compose logs backend
+docker-compose logs frontend
+docker-compose logs -f  # Follow mode
+
+# Restart specific service
+docker-compose restart backend
+
+# Remove and rebuild
+docker-compose down
+docker-compose up -d --build
+```
+
+### Database Connection Problems
+
+```bash
+# Check database health
+docker-compose logs postgres-students
+docker-compose logs postgres-courses
+
+# Connect to database directly
+docker exec -it educonnect-postgres-students psql -U educonnect -d educonnect_students_db
+
+# Reset databases
+docker-compose down -v  # Remove volumes
+docker-compose up -d
+```
 
 ### Port Already in Use
 
 ```bash
-# Check running containers
-docker ps
+# Find process using port
+netstat -ano | findstr :5000
+netstat -ano | findstr :4000
 
-# Stop specific container
-docker stop educonnect-backend
-
-# Or stop all
-docker-compose down
+# Kill process or change ports in docker-compose.yml
 ```
 
-### Database Connection Failed
+### Frontend Build Errors
 
 ```bash
-# Check postgres health
-docker logs educonnect-postgres
-
-# Restart postgres
-docker-compose restart postgres
-```
-
-### Frontend Can't Connect to Backend
-
-- Check CORS settings in backend/server.js
-- Verify FRONTEND_URL environment variable
-- Check Vite proxy configuration
-
-### Clear All Data
-
-```bash
-# Stop and remove volumes
-docker-compose down -v
-
-# Restart fresh
-docker-compose up -d
-```
-
-## 📚 Migration dari REST Version
-
-File-file REST API lama telah di-archive di folder `old-rest-version/`:
-
-- api-gateway/
-- student-service/
-- course-service/
-- \*.html files
-- styles.css
-- database_seed.sql (MySQL)
-
-Untuk kembali ke REST version:
-
-```bash
-git checkout <commit-before-graphql>
+# Clear node_modules and rebuild
+cd frontend
+rm -rf node_modules package-lock.json
+npm install
+docker-compose up -d --build frontend
 ```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open Pull Request
+
+### Development Guidelines
+
+- Follow existing code structure
+- Use Lucide React icons (not emojis)
+- Maintain consistent styling with Tailwind
+- Test all CRUD operations before PR
+- Update README if adding new features
 
 ## 📄 License
 
@@ -430,7 +616,7 @@ This project is licensed under the ISC License.
 
 ## 👨‍💻 Author
 
-**Asricky**
+**Asricky (Zikri)**
 
 - GitHub: [@Asricky](https://github.com/Asricky)
 - Repository: [EduConnect-Project](https://github.com/Asricky/EduConnect-Project)
@@ -439,6 +625,8 @@ This project is licensed under the ISC License.
 
 ⭐ **Star this repo** if you find it helpful!
 
-🐛 Found a bug? Open an issue!
+🐛 Found a bug? [Open an issue](https://github.com/Asricky/EduConnect-Project/issues)!
 
-💡 Have suggestions? Create a pull request!
+💡 Have suggestions? [Create a pull request](https://github.com/Asricky/EduConnect-Project/pulls)!
+
+📧 Questions? Feel free to reach out!

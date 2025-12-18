@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import toast from 'react-hot-toast';
+import { Plus, Pencil, Trash2, BookOpen } from 'lucide-react';
 import { GET_ENROLLMENTS, GET_STUDENTS, GET_COURSES } from '../graphql/queries';
 import {
   CREATE_ENROLLMENT,
@@ -139,7 +140,7 @@ const Enrollments = () => {
             <p className="text-muted">Manage student course enrollments</p>
           </div>
           <button className="btn btn-primary" onClick={() => handleOpenModal()}>
-            ➕ Add Enrollment
+            <Plus className="w-4 h-4" /> Add Enrollment
           </button>
         </div>
 
@@ -167,7 +168,7 @@ const Enrollments = () => {
                   </div>
 
                   <div className="enrollment-course-info">
-                    <div className="course-icon-small">📖</div>
+                    <BookOpen className="course-icon-svg-small" size={28} />
                     <div>
                       <div className="enrollment-course-title">
                         {enrollment.course.title}
@@ -191,7 +192,7 @@ const Enrollments = () => {
                     onClick={() => handleOpenModal(enrollment)}
                     disabled={updating}
                   >
-                    ✏️ Edit Grade
+                    <Pencil className="w-4 h-4" /> Edit Grade
                   </button>
                   <button
                     className="btn btn-sm btn-danger"
@@ -204,7 +205,7 @@ const Enrollments = () => {
                     }
                     disabled={deleting}
                   >
-                    🗑️ Delete
+                    <Trash2 className="w-4 h-4" /> Delete
                   </button>
                 </div>
               </div>

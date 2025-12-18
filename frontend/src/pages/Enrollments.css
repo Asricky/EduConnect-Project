@@ -75,6 +75,12 @@
   opacity: 0.8;
 }
 
+.course-icon-svg-small {
+  color: var(--color-primary);
+  opacity: 0.8;
+}
+
+
 .enrollment-course-title {
   font-weight: 600;
   color: var(--text-secondary);
@@ -99,7 +105,16 @@
   flex-shrink: 0;
 }
 
+<<<<<<< Updated upstream
 /* Edit Info Card */
+=======
+.enrollment-actions .btn {
+  min-width: 100px;
+}
+
+
+/* Edit Info Card in Modal */
+>>>>>>> Stashed changes
 .enrollment-edit-info {
   background: var(--bg-tertiary);
   padding: 1rem;
