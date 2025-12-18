@@ -1,4 +1,3 @@
-// Apollo Server with Express for EduConnect GraphQL API
 const express = require('express');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
@@ -8,7 +7,7 @@ const { join } = require('path');
 require('dotenv').config({ path: join(__dirname, '..', '.env') });
 
 const resolvers = require('./graphql/resolvers');
-const pool = require('./db');
+const { studentsPool, coursesPool } = require('./db');
 
 // Read GraphQL schema
 const typeDefs = readFileSync(
@@ -48,8 +47,9 @@ async function startServer() {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => ({
-        // Add database pool to context
-        db: pool,
+        // Add both database pools to context
+        studentsDb: studentsPool,
+        coursesDb: coursesPool,
       }),
     })
   );
@@ -69,7 +69,8 @@ async function startServer() {
 // Handle shutdown gracefully
 process.on('SIGINT', async () => {
   console.log('\n🛑 Shutting down gracefully...');
-  await pool.end();
+  await studentsPool.end();
+  await coursesPool.end();
   process.exit(0);
 });
 

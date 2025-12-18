@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { ThemeProvider } from './context/ThemeContext';
+import AnimatedBackground from './components/AnimatedBackground';
+import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
 import Courses from './pages/Courses';
@@ -8,18 +10,21 @@ import './App.css';
 
 function App() {
   return (
-    <div className="app">
-      <Navbar />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/students" element={<Students />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/enrollments" element={<Enrollments />} />
-        </Routes>
-      </main>
-    </div>
+    <ThemeProvider>
+      <div className="app">
+        <AnimatedBackground />
+        <Sidebar />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/students" element={<Students />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/enrollments" element={<Enrollments />} />
+          </Routes>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
 
