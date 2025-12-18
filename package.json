@@ -30,5 +30,10 @@
   "bugs": {
     "url": "https://github.com/Asricky/EduConnect-Project/issues"
   },
-  "homepage": "https://github.com/Asricky/EduConnect-Project#readme"
+  "homepage": "https://github.com/Asricky/EduConnect-Project#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
 }

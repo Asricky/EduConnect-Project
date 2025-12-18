@@ -18,8 +18,16 @@ export const ThemeProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        // Apply theme to document
+        // Apply theme to document with both data-theme attribute and dark class
         document.documentElement.setAttribute('data-theme', theme);
+        
+        // Add/remove 'dark' class for Tailwind CSS
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        
         // Save to localStorage
         localStorage.setItem('educonnect-theme', theme);
     }, [theme]);

@@ -1,5 +1,4 @@
--- PostgreSQL Database Initialization Script for EduConnect
--- Course Database (courses only)
+-- Course Database (courses)
 
 -- Create courses table
 CREATE TABLE IF NOT EXISTS courses (

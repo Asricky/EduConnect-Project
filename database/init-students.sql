@@ -1,5 +1,4 @@
--- PostgreSQL Database Initialization Script for EduConnect
--- Student Database (students + enrollments)
+-- Student Database (students dan enrollments)
 
 -- Create students table
 CREATE TABLE IF NOT EXISTS students (

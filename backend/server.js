@@ -4,6 +4,7 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const cors = require('cors');
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const expressPlayground = require('graphql-playground-middleware-express').default;
 require('dotenv').config({ path: join(__dirname, '..', '.env') });
 
 const resolvers = require('./graphql/resolvers');
@@ -37,12 +38,17 @@ const server = new ApolloServer({
 async function startServer() {
   await server.start();
 
-  // Middleware
+  // Middleware with CORS for Apollo Sandbox
   app.use(
     '/graphql',
     cors({
-      origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+      origin: [
+        'http://localhost:5000',
+        'https://studio.apollographql.com',
+        '*'
+      ],
       credentials: true,
+      methods: ['GET', 'POST', 'OPTIONS']
     }),
     express.json(),
     expressMiddleware(server, {
@@ -53,6 +59,9 @@ async function startServer() {
       }),
     })
   );
+
+  // GraphQL Playground UI (moved to separate route to avoid conflict)
+  app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
   // Health check endpoint
   app.get('/health', (req, res) => {
