@@ -5,12 +5,14 @@ import { Plus, Pencil, Trash2, BookOpen, Star, GraduationCap, Hash } from 'lucid
 import { GET_COURSES } from '../graphql/queries';
 import { CREATE_COURSE, UPDATE_COURSE, DELETE_COURSE } from '../graphql/mutations';
 import Modal from '../components/Modal';
+import ConfirmModal from '../components/ConfirmModal';
 import './Courses.css';
 
 const Courses = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [formData, setFormData] = useState({ title: '', credits: '', lecturer: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const { data, loading, error, refetch } = useQuery(GET_COURSES);
   const [createCourse, { loading: creating }] = useMutation(CREATE_COURSE);
@@ -79,17 +81,19 @@ const Courses = () => {
     }
   };
 
-  const handleDelete = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
-      return;
-    }
+  const handleDelete = (id, title) => {
+    setConfirmDelete({ id, title });
+  };
 
+  const confirmDeleteAction = async () => {
     try {
-      await deleteCourse({ variables: { id } });
+      await deleteCourse({ variables: { id: confirmDelete.id } });
       toast.success('Course deleted successfully!');
       refetch();
     } catch (err) {
       toast.error(err.message || 'Failed to delete course');
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -231,6 +235,15 @@ const Courses = () => {
             </div>
           </form>
         </Modal>
+
+        {/* Confirm Delete Modal */}
+        <ConfirmModal
+          isOpen={!!confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteAction}
+          title="Delete Course"
+          message={`Are you sure you want to delete "${confirmDelete?.title}"? This action cannot be undone.`}
+        />
       </div>
     </div>
   );

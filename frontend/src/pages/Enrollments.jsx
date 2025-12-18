@@ -9,12 +9,14 @@ import {
   DELETE_ENROLLMENT,
 } from '../graphql/mutations';
 import Modal from '../components/Modal';
+import ConfirmModal from '../components/ConfirmModal';
 import './Enrollments.css';
 
 const Enrollments = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEnrollment, setEditingEnrollment] = useState(null);
   const [formData, setFormData] = useState({ studentId: '', courseId: '', grade: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const { data: enrollmentsData, loading, error, refetch } = useQuery(GET_ENROLLMENTS);
   const { data: studentsData } = useQuery(GET_STUDENTS);
@@ -86,21 +88,19 @@ const Enrollments = () => {
     }
   };
 
-  const handleDelete = async (id, studentName, courseTitle) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete enrollment of ${studentName} in ${courseTitle}?`
-      )
-    ) {
-      return;
-    }
+  const handleDelete = (id, studentName, courseTitle) => {
+    setConfirmDelete({ id, studentName, courseTitle });
+  };
 
+  const confirmDeleteAction = async () => {
     try {
-      await deleteEnrollment({ variables: { id } });
+      await deleteEnrollment({ variables: { id: confirmDelete.id } });
       toast.success('Enrollment deleted successfully!');
       refetch();
     } catch (err) {
       toast.error(err.message || 'Failed to delete enrollment');
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -306,6 +306,15 @@ const Enrollments = () => {
             </div>
           </form>
         </Modal>
+
+        {/* Confirm Delete Modal */}
+        <ConfirmModal
+          isOpen={!!confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteAction}
+          title="Delete Enrollment"
+          message={`Are you sure you want to delete enrollment for "${confirmDelete?.studentName}" in "${confirmDelete?.courseTitle}"? This action cannot be undone.`}
+        />
       </div>
     </div>
   );

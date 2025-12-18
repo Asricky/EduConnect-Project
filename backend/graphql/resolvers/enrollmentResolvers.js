@@ -170,10 +170,16 @@ const enrollmentResolvers = {
           'SELECT course_id AS id, title, credits, lecturer, created_at FROM courses WHERE course_id = $1',
           [parent.course_id]
         );
+        
+        if (!result.rows[0]) {
+          console.error(`Course not found for enrollment. Course ID: ${parent.course_id}`);
+          throw new Error(`Course with ID ${parent.course_id} not found. This enrollment may reference a deleted course.`);
+        }
+        
         return result.rows[0];
       } catch (error) {
         console.error('Error fetching course for enrollment:', error);
-        return null;
+        throw error;
       }
     },
   },

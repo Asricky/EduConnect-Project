@@ -1,5 +1,5 @@
 // Course Resolvers
-const { coursesPool } = require('../../db');
+const { coursesPool, studentsPool } = require('../../db');
 
 const courseResolvers = {
   Query: {
@@ -71,6 +71,18 @@ const courseResolvers = {
     // Delete course
     deleteCourse: async (_, { id }) => {
       try {
+        // Check if course has any enrollments
+        const enrollmentCheck = await studentsPool.query(
+          'SELECT COUNT(*) FROM enrollments WHERE course_id = $1',
+          [id]
+        );
+        
+        const enrollmentCount = parseInt(enrollmentCheck.rows[0].count);
+        if (enrollmentCount > 0) {
+          throw new Error(`Cannot delete course. ${enrollmentCount} student(s) are currently enrolled in this course.`);
+        }
+
+        // Proceed with deletion if no enrollments
         const result = await coursesPool.query(
           'DELETE FROM courses WHERE course_id = $1',
           [id]
@@ -81,7 +93,7 @@ const courseResolvers = {
         return true;
       } catch (error) {
         console.error('Error deleting course:', error);
-        throw new Error('Failed to delete course');
+        throw error;
       }
     },
   },

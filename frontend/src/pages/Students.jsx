@@ -5,12 +5,14 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { GET_STUDENTS } from '../graphql/queries';
 import { CREATE_STUDENT, UPDATE_STUDENT, DELETE_STUDENT } from '../graphql/mutations';
 import Modal from '../components/Modal';
+import ConfirmModal from '../components/ConfirmModal';
 import './Students.css';
 
 const Students = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [formData, setFormData] = useState({ name: '', email: '' });
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const { data, loading, error, refetch } = useQuery(GET_STUDENTS);
   const [createStudent, { loading: creating }] = useMutation(CREATE_STUDENT);
@@ -63,17 +65,19 @@ const Students = () => {
     }
   };
 
-  const handleDelete = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete ${name}?`)) {
-      return;
-    }
+  const handleDelete = (id, name) => {
+    setConfirmDelete({ id, name });
+  };
 
+  const confirmDeleteAction = async () => {
     try {
-      await deleteStudent({ variables: { id } });
+      await deleteStudent({ variables: { id: confirmDelete.id } });
       toast.success('Student deleted successfully!');
       refetch();
     } catch (err) {
       toast.error(err.message || 'Failed to delete student');
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -194,6 +198,15 @@ const Students = () => {
             </div>
           </form>
         </Modal>
+
+        {/* Confirm Delete Modal */}
+        <ConfirmModal
+          isOpen={!!confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteAction}
+          title="Delete Student"
+          message={`Are you sure you want to delete "${confirmDelete?.name}"? This action cannot be undone.`}
+        />
       </div>
     </div>
   );

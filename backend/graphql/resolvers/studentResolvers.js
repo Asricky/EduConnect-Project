@@ -77,6 +77,18 @@ const studentResolvers = {
     // Delete student
     deleteStudent: async (_, { id }) => {
       try {
+        // Check if student has any enrollments
+        const enrollmentCheck = await studentsPool.query(
+          'SELECT COUNT(*) FROM enrollments WHERE student_id = $1',
+          [id]
+        );
+        
+        const enrollmentCount = parseInt(enrollmentCheck.rows[0].count);
+        if (enrollmentCount > 0) {
+          throw new Error(`Cannot delete student. This student is currently enrolled in ${enrollmentCount} course(s).`);
+        }
+
+        // Proceed with deletion if no enrollments
         const result = await studentsPool.query(
           'DELETE FROM students WHERE student_id = $1',
           [id]
@@ -87,7 +99,7 @@ const studentResolvers = {
         return true;
       } catch (error) {
         console.error('Error deleting student:', error);
-        throw new Error('Failed to delete student');
+        throw error;
       }
     },
   },
