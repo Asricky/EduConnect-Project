@@ -1,4 +1,4 @@
-// Main resolver file - combines all resolvers
+// Main resolver file 
 const studentResolvers = require('./studentResolvers');
 const courseResolvers = require('./courseResolvers');
 const enrollmentResolvers = require('./enrollmentResolvers');

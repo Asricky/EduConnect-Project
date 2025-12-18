@@ -1,12 +1,12 @@
 // Course Resolvers
-const pool = require('../../db');
+const { coursesPool } = require('../../db');
 
 const courseResolvers = {
   Query: {
     // Get all courses
     courses: async () => {
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'SELECT course_id AS id, title, credits, lecturer, created_at FROM courses ORDER BY course_id'
         );
         return result.rows;
@@ -19,7 +19,7 @@ const courseResolvers = {
     // Get single course by ID
     course: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'SELECT course_id AS id, title, credits, lecturer, created_at FROM courses WHERE course_id = $1',
           [id]
         );
@@ -39,7 +39,7 @@ const courseResolvers = {
     createCourse: async (_, { input }) => {
       const { title, credits, lecturer } = input;
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'INSERT INTO courses (title, credits, lecturer) VALUES ($1, $2, $3) RETURNING course_id AS id, title, credits, lecturer, created_at',
           [title, credits, lecturer]
         );
@@ -54,7 +54,7 @@ const courseResolvers = {
     updateCourse: async (_, { id, input }) => {
       const { title, credits, lecturer } = input;
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'UPDATE courses SET title = $1, credits = $2, lecturer = $3 WHERE course_id = $4 RETURNING course_id AS id, title, credits, lecturer, created_at',
           [title, credits, lecturer, id]
         );
@@ -71,7 +71,7 @@ const courseResolvers = {
     // Delete course
     deleteCourse: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'DELETE FROM courses WHERE course_id = $1',
           [id]
         );

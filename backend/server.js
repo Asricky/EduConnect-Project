@@ -1,14 +1,14 @@
-// Apollo Server with Express for EduConnect GraphQL API
 const express = require('express');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const cors = require('cors');
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const expressPlayground = require('graphql-playground-middleware-express').default;
 require('dotenv').config({ path: join(__dirname, '..', '.env') });
 
 const resolvers = require('./graphql/resolvers');
-const pool = require('./db');
+const { studentsPool, coursesPool } = require('./db');
 
 // Read GraphQL schema
 const typeDefs = readFileSync(
@@ -38,21 +38,30 @@ const server = new ApolloServer({
 async function startServer() {
   await server.start();
 
-  // Middleware
+  // Middleware with CORS for Apollo Sandbox
   app.use(
     '/graphql',
     cors({
-      origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+      origin: [
+        'http://localhost:5000',
+        'https://studio.apollographql.com',
+        '*'
+      ],
       credentials: true,
+      methods: ['GET', 'POST', 'OPTIONS']
     }),
     express.json(),
     expressMiddleware(server, {
       context: async ({ req }) => ({
-        // Add database pool to context
-        db: pool,
+        // Add both database pools to context
+        studentsDb: studentsPool,
+        coursesDb: coursesPool,
       }),
     })
   );
+
+  // GraphQL Playground UI (moved to separate route to avoid conflict)
+  app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
   // Health check endpoint
   app.get('/health', (req, res) => {
@@ -69,7 +78,8 @@ async function startServer() {
 // Handle shutdown gracefully
 process.on('SIGINT', async () => {
   console.log('\n🛑 Shutting down gracefully...');
-  await pool.end();
+  await studentsPool.end();
+  await coursesPool.end();
   process.exit(0);
 });
 

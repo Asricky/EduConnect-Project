@@ -1,12 +1,12 @@
 // Student Resolvers
-const pool = require('../../db');
+const { studentsPool } = require('../../db');
 
 const studentResolvers = {
   Query: {
     // Get all students
     students: async () => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'SELECT student_id AS id, name, email, created_at FROM students ORDER BY student_id'
         );
         return result.rows;
@@ -19,7 +19,7 @@ const studentResolvers = {
     // Get single student by ID
     student: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'SELECT student_id AS id, name, email, created_at FROM students WHERE student_id = $1',
           [id]
         );
@@ -39,7 +39,7 @@ const studentResolvers = {
     createStudent: async (_, { input }) => {
       const { name, email } = input;
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'INSERT INTO students (name, email) VALUES ($1, $2) RETURNING student_id AS id, name, email, created_at',
           [name, email]
         );
@@ -57,7 +57,7 @@ const studentResolvers = {
     updateStudent: async (_, { id, input }) => {
       const { name, email } = input;
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'UPDATE students SET name = $1, email = $2 WHERE student_id = $3 RETURNING student_id AS id, name, email, created_at',
           [name, email, id]
         );
@@ -77,7 +77,7 @@ const studentResolvers = {
     // Delete student
     deleteStudent: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'DELETE FROM students WHERE student_id = $1',
           [id]
         );
