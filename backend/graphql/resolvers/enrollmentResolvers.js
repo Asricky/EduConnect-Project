@@ -1,12 +1,12 @@
 // Enrollment Resolvers
-const pool = require('../../db');
+const { studentsPool, coursesPool } = require('../../db');
 
 const enrollmentResolvers = {
   Query: {
     // Get all enrollments
     enrollments: async () => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'SELECT enrollment_id AS id, student_id, course_id, grade, created_at FROM enrollments ORDER BY enrollment_id'
         );
         return result.rows;
@@ -19,7 +19,7 @@ const enrollmentResolvers = {
     // Get single enrollment by ID
     enrollment: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'SELECT enrollment_id AS id, student_id, course_id, grade, created_at FROM enrollments WHERE enrollment_id = $1',
           [id]
         );
@@ -33,32 +33,43 @@ const enrollmentResolvers = {
       }
     },
 
-    // Get student with their enrolled courses (Integration Query)
+    // Get student with their enrolled courses (Cross-Database Query)
     studentCourses: async (_, { studentId }) => {
       try {
-        // Get student data
-        const studentResult = await pool.query(
+        // Get student data from Student DB
+        const studentResult = await studentsPool.query(
           'SELECT student_id AS id, name, email, created_at FROM students WHERE student_id = $1',
           [studentId]
         );
-        
+
         if (studentResult.rows.length === 0) {
           throw new Error('Student not found');
         }
 
-        // Get enrolled courses with grades
-        const coursesResult = await pool.query(
-          `SELECT c.title, c.credits, e.grade 
-           FROM enrollments e
-           JOIN courses c ON e.course_id = c.course_id
-           WHERE e.student_id = $1
-           ORDER BY c.title`,
+        // Get enrollments from Student DB
+        const enrollmentsResult = await studentsPool.query(
+          'SELECT course_id, grade FROM enrollments WHERE student_id = $1',
           [studentId]
         );
 
+        // Get course details from Course DB for each enrollment
+        const courses = [];
+        for (const enrollment of enrollmentsResult.rows) {
+          const courseResult = await coursesPool.query(
+            'SELECT course_id AS id, title, credits, lecturer FROM courses WHERE course_id = $1',
+            [enrollment.course_id]
+          );
+          if (courseResult.rows.length > 0) {
+            courses.push({
+              ...courseResult.rows[0],
+              grade: enrollment.grade,
+            });
+          }
+        }
+
         return {
           student: studentResult.rows[0],
-          courses: coursesResult.rows,
+          courses: courses,
         };
       } catch (error) {
         console.error('Error fetching student courses:', error);
@@ -72,17 +83,33 @@ const enrollmentResolvers = {
     createEnrollment: async (_, { input }) => {
       const { studentId, courseId, grade } = input;
       try {
-        const result = await pool.query(
+        // Verify student exists in Student DB
+        const studentCheck = await studentsPool.query(
+          'SELECT student_id FROM students WHERE student_id = $1',
+          [studentId]
+        );
+        if (studentCheck.rows.length === 0) {
+          throw new Error('Student does not exist');
+        }
+
+        // Verify course exists in Course DB
+        const courseCheck = await coursesPool.query(
+          'SELECT course_id FROM courses WHERE course_id = $1',
+          [courseId]
+        );
+        if (courseCheck.rows.length === 0) {
+          throw new Error('Course does not exist');
+        }
+
+        // Create enrollment in Student DB
+        const result = await studentsPool.query(
           'INSERT INTO enrollments (student_id, course_id, grade) VALUES ($1, $2, $3) RETURNING enrollment_id AS id, student_id, course_id, grade, created_at',
           [studentId, courseId, grade || null]
         );
         return result.rows[0];
       } catch (error) {
         console.error('Error creating enrollment:', error);
-        if (error.code === '23503') { // Foreign key violation
-          throw new Error('Student or Course does not exist');
-        }
-        throw new Error('Failed to create enrollment');
+        throw error;
       }
     },
 
@@ -90,7 +117,7 @@ const enrollmentResolvers = {
     updateEnrollment: async (_, { id, input }) => {
       const { grade } = input;
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'UPDATE enrollments SET grade = $1 WHERE enrollment_id = $2 RETURNING enrollment_id AS id, student_id, course_id, grade, created_at',
           [grade, id]
         );
@@ -107,7 +134,7 @@ const enrollmentResolvers = {
     // Delete enrollment
     deleteEnrollment: async (_, { id }) => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'DELETE FROM enrollments WHERE enrollment_id = $1',
           [id]
         );
@@ -122,11 +149,11 @@ const enrollmentResolvers = {
     },
   },
 
-  // Field resolvers for Enrollment type
+  // Field resolvers for Enrollment type (Cross-Database)
   Enrollment: {
     student: async (parent) => {
       try {
-        const result = await pool.query(
+        const result = await studentsPool.query(
           'SELECT student_id AS id, name, email, created_at FROM students WHERE student_id = $1',
           [parent.student_id]
         );
@@ -139,7 +166,7 @@ const enrollmentResolvers = {
 
     course: async (parent) => {
       try {
-        const result = await pool.query(
+        const result = await coursesPool.query(
           'SELECT course_id AS id, title, credits, lecturer, created_at FROM courses WHERE course_id = $1',
           [parent.course_id]
         );
