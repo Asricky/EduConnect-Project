@@ -156,16 +156,11 @@
   flex-shrink: 0;
 }
 
-<<<<<<< Updated upstream
-/* Edit Info Card */
-=======
 .enrollment-actions .btn {
   min-width: 100px;
 }
 
-
 /* Edit Info Card in Modal */
->>>>>>> Stashed changes
 .enrollment-edit-info {
   background: var(--bg-secondary);
   padding: 1rem;

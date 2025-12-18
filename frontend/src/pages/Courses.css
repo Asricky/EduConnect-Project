@@ -55,8 +55,6 @@
   opacity: 0.9;
 }
 
-<<<<<<< Updated upstream
-=======
 /* Course Icon SVG */
 .course-icon-svg {
   color: var(--color-primary);
@@ -64,9 +62,7 @@
   margin: 0 auto 0.5rem;
 }
 
-
 /* Course Title */
->>>>>>> Stashed changes
 .course-title {
   margin: 0 0 1rem 0;
   font-size: 1.125rem;
@@ -103,7 +99,6 @@
   color: var(--text-secondary);
 }
 
-
 .detail-text {
   color: var(--text-secondary);
 }
@@ -124,27 +119,7 @@
 .course-actions .btn {
   flex: 1;
   min-width: 0;
-<<<<<<< Updated upstream
 }
-
-<<<<<<< Updated upstream
-=======
-
-/* Empty State */
-.text-center {
-  text-align: center;
-}
-
-.card.text-center {
-  background: var(--bg-card);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 1rem;
-  padding: 3rem 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-=======
->>>>>>> Stashed changes
-}
-
 
 /* Empty State */
 .text-center {
@@ -159,7 +134,6 @@
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
 }
 
->>>>>>> Stashed changes
 /* Responsive */
 @media (max-width: 768px) {
   .courses-page {

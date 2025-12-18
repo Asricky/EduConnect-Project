@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-import './Modal.css';
-=======
 import { X } from 'lucide-react';
->>>>>>> Stashed changes
 
 const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
@@ -14,17 +10,6 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   };
 
   return (
-<<<<<<< Updated upstream
-    <div className="modal-overlay" onClick={handleBackdropClick}>
-      <div className="modal-content animate-fade-in">
-        <div className="modal-header flex-between">
-          <h3>{title}</h3>
-          <button onClick={onClose} className="modal-close">
-            ✕
-          </button>
-        </div>
-        <div className="modal-body">{children}</div>
-=======
     <div className="fixed inset-0 bg-black/75 backdrop-blur-[8px] flex items-center justify-center z-[1000] animate-[fadeIn_0.2s_ease]" onClick={handleBackdropClick}>
       <div className="bg-[var(--bg-card)] rounded-2xl p-0 max-w-[550px] w-[90%] max-h-[90vh] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-[var(--border-color)] animate-[fadeIn_0.3s_ease]">
         <div className="p-6 border-b border-[var(--border-color)] bg-gradient-to-r from-violet-500/10 to-purple-500/10 flex justify-between items-center">
@@ -34,7 +19,6 @@ const Modal = ({ isOpen, onClose, title, children }) => {
           </button>
         </div>
         <div className="p-8 overflow-y-auto max-h-[calc(90vh-100px)] bg-[var(--bg-card)]">{children}</div>
->>>>>>> Stashed changes
       </div>
     </div>
   );
